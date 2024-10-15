@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Ash Ketchum",
+    "email": "ash@poke.com",
+    "favorite_pokemon": "Pikachu"
+  },
+  {
+    "id": 2,
+    "name": "Misty",
+    "email": "misty@poke.com",
+    "favorite_pokemon": "Starmie"
+  }
+]
