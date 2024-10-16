@@ -7,7 +7,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <Header />
-      <Main />
+      <Main /> {/* List of Pokémon */}
       <Footer />
     </div>
   );
