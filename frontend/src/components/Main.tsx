@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card';
+import { types } from 'util';
 
 interface Pokemon {
   name: string;
@@ -19,6 +20,13 @@ export interface PokeDetail
 			}
 		}
   };
+  height: number;
+  weight: number;
+  types: {
+	type: {
+	  name: string;
+	}
+  }[];
 }
 
 const Main: React.FC = () => {
