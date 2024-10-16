@@ -1,9 +1,3 @@
--- Create the database
-CREATE DATABASE pokemon_db;
-
--- Connect to the database
-\c pokemon_db;
-
 -- Create the users table
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
