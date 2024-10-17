@@ -4,7 +4,12 @@ const app = express();
 const axios = require('axios');
 const pool = require('./db');
 
-const { register } = require('./auth/auth'); // Adjust the path accordingly
+const cors = require('cors');
+app.use(cors());
+
+const { register } = require('./auth/register');
+const { login } = require('./auth/login');
+const { authenticateToken } = require('./auth/authMiddleware');
 
 app.use(express.json())
 
@@ -36,6 +41,10 @@ app.get('/api/users/', async (req, res) => {
 });
 
 app.post('/api/register', register);
+app.post('/api/login', login);
+app.get('/api/protected', authenticateToken, (req, res) => {
+  res.json({ message: 'This is a protected route.', user: req.user });
+});
 
 // Check database connection
 pool.connect()
