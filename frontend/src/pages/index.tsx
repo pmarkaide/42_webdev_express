@@ -11,15 +11,6 @@ const Home: React.FC = () => {
     <div>
       <Header />
 		  <Main />
-			<div className="flex justify-center mt-4">
-        <Link href="/login">
-          <button className="text-blue-500 hover:underline">Login</button>
-        </Link>
-        <span className="mx-2">|</span>
-        <Link href="/signup">
-          <button className="text-blue-500 hover:underline">Sign Up</button>
-        </Link>
-      </div>
       <Footer />
     </div>
   );
