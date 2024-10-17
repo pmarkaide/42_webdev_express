@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import pokeBall from '../assests/logo.png';
+import Image from 'next/image';
+import pokeBall from '@/assests/logo.png'; 
 
-const Header: React.FC<{ onSearch: (query: string) => void }> = ({ onSearch }) => {
+interface HeaderProps {
+	onSearch: (query: string) => void;
+  }
+
+  const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 	const [searchQuery, setSearchQuery] = useState('');
   
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,7 +21,7 @@ const Header: React.FC<{ onSearch: (query: string) => void }> = ({ onSearch }) =
 			<div className="flex items-center justify-between">
 				<div className="flex shrink-0">
 					<a aria-current="page" className="flex items-center w-10" href="/">
-					<img src={pokeBall.src} alt="Poke Ball" />
+					<Image src={pokeBall} alt="Poke Ball" width={40} height={40} />
 					<p className="sr-only">Website Title</p>
 					</a>
 				</div>

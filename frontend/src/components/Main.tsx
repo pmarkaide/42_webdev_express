@@ -30,7 +30,11 @@ export interface PokeDetail
   types: TypeSlot[];
 }
 
-const Main: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
+interface MainProps {
+	searchQuery: string;
+  }
+
+  const Main: React.FC<MainProps> = ({ searchQuery }) => {
 	const [pokemons, setPokemons] = useState<Pokemon[]>([]);
 	const [pokeDetails, setPokeDetails] = useState<PokeDetail[]>([]);
   	const [loading, setLoading] = useState<boolean>(true);
@@ -69,6 +73,8 @@ const Main: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
 	pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  console.log("Filtered Pokémon:", filteredPokemons);
+
   if (loading) {
     return <div className="text-center py-4">Loading...</div>;
   }
@@ -84,7 +90,7 @@ const Main: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
 		</div>
 	  ) : (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-28">
-		   {filteredPokemons.map((pokemon) => (
+		    {pokeDetails.map((pokemon) => (
 			<Card key={pokemon.name} pokemon={pokemon} onClick={() => setSelectedPokemon(pokemon)} />
 		  ))}
 		</div>
