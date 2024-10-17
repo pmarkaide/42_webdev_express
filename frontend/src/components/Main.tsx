@@ -6,7 +6,13 @@ interface Pokemon {
 	url: string;
 	img: string;
 }
-
+export interface TypeSlot {
+	slot: number;
+	type: {
+	  name: string;
+	  url: string;
+	};
+  }
 export interface PokeDetail
 {
 	id: string;
@@ -19,12 +25,16 @@ export interface PokeDetail
 			}
 		}
   };
+  height: number;
+  weight: number;
+  types: TypeSlot[];
 }
 
 const Main: React.FC = () => {
 	const [pokemons, setPokemons] = useState<Pokemon[]>([]);
 	const [pokeDetails, setPokeDetails] = useState<PokeDetail[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  	const [loading, setLoading] = useState<boolean>(true);
+	const [selectedPokemon, setSelectedPokemon] = useState<PokeDetail | null>(null);
 
   useEffect(() => {
     const fetchPokemons = async () => {
@@ -59,11 +69,22 @@ const Main: React.FC = () => {
   }
 
   return (
+	<div>
+	  {selectedPokemon ? (
+		<div>
+		  <h2>{selectedPokemon.name}</h2>
+		  <img src={selectedPokemon.sprites.other.showdown.front_default} alt={selectedPokemon.name} />
+		  {/* Add more details here */}
+		  <button onClick={() => setSelectedPokemon(null)}>Go back</button>
+		</div>
+	  ) : (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-28">
-			{pokeDetails.map((pokemon) => (
-        <Card key={pokemon.name} pokemon={pokemon} />
-      ))}
-    </div>
+		  {pokeDetails.map((pokemon) => (
+			<Card key={pokemon.name} pokemon={pokemon} onClick={() => setSelectedPokemon(pokemon)} />
+		  ))}
+		</div>
+	  )}
+	</div>
   );
 };
 

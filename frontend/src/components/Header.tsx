@@ -1,8 +1,6 @@
 import React from 'react';
 import pokeBall from '../assests/logo.png';
 
-import Link from 'next/link';
-
 const Header: React.FC = () => {
   return (
     <header
