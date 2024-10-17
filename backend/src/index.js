@@ -1,17 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const axios = require('axios');
-const { Pool } = require('pg');
-require('dotenv').config();
+const pool = require('./db');
 
-// PostgreSQL connection configuration
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-})
+const { register } = require('./auth/auth'); // Adjust the path accordingly
 
 app.use(express.json())
 
@@ -41,6 +34,8 @@ app.get('/api/users/', async (req, res) => {
     res.status(500).json({ error: 'Internal server error', details: err.message });
   }
 });
+
+app.post('/api/register', register);
 
 // Check database connection
 pool.connect()

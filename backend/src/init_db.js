@@ -4,7 +4,7 @@
 
 // const runSQLScript = async () => {
 //   try {
-//     const sqlPath = path.join(__dirname, 'init_db.sql');
+//     const sqlPath = path.join(__dirname, 'rich_init_db.sql');
 //     const sql = fs.readFileSync(sqlPath).toString();
 
 //     await pool.query(sql);
