@@ -3,11 +3,11 @@ import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
 
-const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const Layout: React.FC<{ children: React.ReactNode }> = ({ }) => {
   return (
     <div>
       <Header />
-      <Main>{children}</Main>
+      <Main />
       <Footer />
     </div>
   );
