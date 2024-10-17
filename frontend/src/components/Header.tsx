@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import pokeBall from '../assests/logo.png';
 
-const Header: React.FC = () => {
+const Header: React.FC<{ onSearch: (query: string) => void }> = ({ onSearch }) => {
+	const [searchQuery, setSearchQuery] = useState('');
+  
+	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	  setSearchQuery(e.target.value);
+	  onSearch(e.target.value);
+	};
+
   return (
     <header
     	className="fixed inset-x-0 top-0 z-30 mx-auto w-full max-w-screen-md border border-gray-100 bg-white/80 py-3 shadow backdrop-blur-lg md:top-6 md:rounded-3xl lg:max-w-screen-lg">
@@ -13,17 +20,14 @@ const Header: React.FC = () => {
 					<p className="sr-only">Website Title</p>
 					</a>
 				</div>
-				<div className="hidden md:flex md:items-center md:justify-center md:gap-5">
-					<a aria-current="page"
-						className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900"
-						href="#">
-							pokemon
-						</a>
-					<a className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900"
-							href="#">dogimon</a>
-					<a className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900"
-						href="#">shopping center</a>
-				</div>
+				<div className="flex items-center justify-end gap-3">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search Pokemon..."
+              className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all duration-150 hover:bg-gray-50"
+            />
 				<div className="flex items-center justify-end gap-3">
 					<a className="hidden items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all duration-150 hover:bg-gray-50 sm:inline-flex"
 						href="/login">Sign in</a>
@@ -31,6 +35,7 @@ const Header: React.FC = () => {
 						href="/login">Login</a>
 				</div>
 			</div>
+		</div>
 		</div>
 	</header>
 
