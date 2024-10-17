@@ -1,8 +1,10 @@
 import React from 'react';
+import Link from 'next/link';
 import { PokeDetail } from './Main';
 
 interface CardProps {
   pokemon: PokeDetail;
+  onClick: () => void;
 }
 
 const Card: React.FC<CardProps> = ({ pokemon }) => {
@@ -21,14 +23,12 @@ const Card: React.FC<CardProps> = ({ pokemon }) => {
       </div>
 
       <h2 className="text-lg font-bold text-center mt-2">{pokemon.name}</h2>
-      <a
-        href="#"
-        className="text-blue-600 hover:underline block text-center mt-2"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        View Details
-      </a>
+       {/* Link to Pokémon Detail Page */}
+       <Link href={`/pokemon/${pokemon.id}`}>
+        <span className="text-blue-600 hover:underline block text-center mt-2">
+          View Details
+        </span>
+      </Link>
     </div>
   );
 };
