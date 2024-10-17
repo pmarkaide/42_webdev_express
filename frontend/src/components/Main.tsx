@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card';
-import { types } from 'util';
 
 interface Pokemon {
   name: string;
 	url: string;
 	img: string;
 }
-
+export interface TypeSlot {
+	slot: number;
+	type: {
+	  name: string;
+	  url: string;
+	};
+  }
 export interface PokeDetail
 {
 	id: string;
@@ -22,11 +27,7 @@ export interface PokeDetail
   };
   height: number;
   weight: number;
-  types: {
-	type: {
-	  name: string;
-	}
-  }[];
+  types: TypeSlot[];
 }
 
 const Main: React.FC = () => {

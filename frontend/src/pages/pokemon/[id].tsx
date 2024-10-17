@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { PokeDetail } from '../../components/Main';
+import { PokeDetail, TypeSlot } from '../../components/Main';
 
 const PokemonDetail: React.FC = () => {
   const router = useRouter();
@@ -63,7 +63,7 @@ const PokemonDetail: React.FC = () => {
               <li>
                 <span className="font-semibold">Types:</span>
                 {/* Map over the types array */}
-                {pokemon.types.map((typeSlot: any) => (
+                {pokemon.types.map((typeSlot: TypeSlot) => (
                   <span
                     key={typeSlot.type.name}
                     className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mt-2"
