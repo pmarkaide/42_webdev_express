@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card';
+import { useRouter } from 'next/router';
 
 interface Pokemon {
   name: string;
@@ -39,6 +40,7 @@ interface MainProps {
 	const [pokeDetails, setPokeDetails] = useState<PokeDetail[]>([]);
   	const [loading, setLoading] = useState<boolean>(true);
 	const [selectedPokemon, setSelectedPokemon] = useState<PokeDetail | null>(null);
+	const router = useRouter();
 
   useEffect(() => {
     const fetchPokemons = async () => {
@@ -68,10 +70,15 @@ interface MainProps {
 		console.log(pokeDetails)
   }, []);
 
-  const filteredPokemons = pokeDetails.filter(pokemon => 
-	pokemon && pokemon.name && searchQuery && 
-	pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handlePokemonClick = (pokemonId: string) => {
+    router.push(`/pokemon/${pokemonId}`);
+  };
+
+  const filteredPokemons = searchQuery
+  ? pokeDetails.filter(pokemon => 
+	  pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
+	)
+  : pokeDetails;
 
   console.log("Filtered Pokémon:", filteredPokemons);
 
@@ -79,23 +86,20 @@ interface MainProps {
     return <div className="text-center py-4">Loading...</div>;
   }
 
+  if (router.pathname.includes('/pokemon/')) {
+	return null; // Don't render anything if we're on a pokemon detail page
+  }
+  
   return (
-	<div>
-	  {selectedPokemon ? (
-		<div>
-		  <h2>{selectedPokemon.name}</h2>
-		  <img src={selectedPokemon.sprites.other.showdown.front_default} alt={selectedPokemon.name} />
-		  {/* Add more details here */}
-		  <button onClick={() => setSelectedPokemon(null)}>Go back</button>
-		</div>
-	  ) : (
-		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-28">
-		    {pokeDetails.map((pokemon) => (
-			<Card key={pokemon.name} pokemon={pokemon} onClick={() => setSelectedPokemon(pokemon)} />
-		  ))}
-		</div>
-	  )}
-	</div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-28">
+      {filteredPokemons.map((pokemon) => (
+        <Card 
+          key={pokemon.id} 
+          pokemon={pokemon} 
+          onClick={() => handlePokemonClick(pokemon.id)}
+        />
+      ))}
+    </div>
   );
 };
 
