@@ -26,22 +26,47 @@ const PokemonDetail: React.FC = () => {
     }
   }, [id]);
 
+  const handleGoBack = () => {
+    router.push('/');
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   if (!pokemon) {
-    return <div>Pokemon not found</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-2xl font-bold mb-4">Pokemon not found</h2>
+        <button 
+          onClick={handleGoBack}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Go Back
+        </button>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-        {/* Header Section */}
-        <div className="bg-gradient-to-r from-blue-500 to-green-500 p-4">
-          <h1 className="text-white text-3xl font-bold text-center">{pokemon.name}</h1>
-        </div>
 
+    <div className="max-w-4xl mx-auto p-8 mt-28">
+    <button 
+      onClick={handleGoBack}
+      className="mb-4 text-blue-500 hover:text-blue-600 flex items-center"
+    >
+      ← Back to All Pokemon
+    </button>
+    
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+      {/* Your existing detail view content */}
+      <div className="bg-gradient-to-r from-blue-500 to-green-500 p-4">
+        <h1 className="text-white text-3xl font-bold text-center capitalize">{pokemon.name}</h1>
+      </div>
         {/* Main Content Section */}
         <div className="flex flex-col md:flex-row">
           {/* Image Section */}
