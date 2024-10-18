@@ -1,18 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const axios = require('axios');
-const { Pool } = require('pg')
+const pool = require('./db');
 
-const PORT = 3000;
+const cors = require('cors');
+app.use(cors());
 
-// PostgreSQL connection configuration
-const pool = new Pool({
-  user: 'youruser',
-  host: 'localhost',
-  database: 'pokemon_db',
-  password: 'yourpassword',
-  port: 5432,
-})
+const { register } = require('./auth/register');
+const { login } = require('./auth/login');
+const { authenticateToken } = require('./auth/authMiddleware');
 
 app.use(express.json())
 
@@ -23,7 +20,6 @@ app.get('/', async (req, res) => {
 
     // Sending the fetched data back to the frontend
 	res.json(response.data);
-	console.log(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch Pokémon data' });
   }
@@ -44,6 +40,12 @@ app.get('/api/users/', async (req, res) => {
   }
 });
 
+app.post('/api/register', register);
+app.post('/api/login', login);
+app.get('/api/protected', authenticateToken, (req, res) => {
+  res.json({ message: 'This is a protected route.', user: req.user });
+});
+
 // Check database connection
 pool.connect()
   .then(client => {
@@ -54,6 +56,6 @@ pool.connect()
     console.error('Database connection error:', err.message);
   });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(process.env.BACKEND_PORT, () => {
+  console.log(`Server running on port ${process.env.BACKEND_PORT}`);
 });
