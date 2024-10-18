@@ -45,7 +45,7 @@ interface MainProps {
   useEffect(() => {
     const fetchPokemons = async () => {
       try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=101'); // Fetch first 20 Pokémon
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1000'); // Fetch first 20 Pokémon
 				const data = await response.json();
 
 				setPokemons(data.results);
@@ -89,7 +89,7 @@ interface MainProps {
   if (router.pathname.includes('/pokemon/')) {
 	return null; // Don't render anything if we're on a pokemon detail page
   }
-  
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-28">
       {filteredPokemons.map((pokemon) => (
