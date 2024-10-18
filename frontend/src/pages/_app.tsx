@@ -1,9 +1,15 @@
-// src/pages/_app.tsx
+import React from 'react';
 import { AppProps } from 'next/app';
-import './global.css'; // Ensure to import your global CSS file
+import './global.css';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-grow">
+        <Component {...pageProps} />
+      </main>
+    </div>
+  );
+};
 
-export default MyApp;
+export default App;
