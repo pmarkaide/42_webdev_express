@@ -4,6 +4,7 @@ const app = express();
 const axios = require('axios');
 const pool = require('./db');
 
+//This will allow you make the api call in frontend
 const cors = require('cors');
 app.use(cors());
 
