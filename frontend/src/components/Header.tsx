@@ -3,10 +3,19 @@ import Image from 'next/image';
 import pokeBall from '../assests/logo.png';
 import defaultAvatar from '../assests/default_avatar.jpg'
 
+//temp
+import { useSession } from "next-auth/react";
+
 const Header: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<{ avatar?: string } | null>(null);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+	const [dropdownVisible, setDropdownVisible] = useState(false);
+
+	//temp
+	const { data: session } = useSession();
+
+	console.log(session?.user);
+
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -15,8 +24,16 @@ const Header: React.FC = () => {
     if (storedToken) {
       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
       setUser(storedUser);
-    }
-  }, []);
+		}
+
+		//temp
+		if (session)
+		{
+      const avatar = session.user?.image || undefined; // Ensure avatar is either string or undefined
+  		setUser({ avatar }); // This correctly sets the user state
+		}
+
+  }, [session]);
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -62,14 +79,14 @@ const Header: React.FC = () => {
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
-                  className="inline-flex items-center justify-center rounded-full h-8 w-8"
+                  className="inline-flex items-center justify-center rounded-full h-10 w-10"
                 >
                   <Image
                     src={user?.avatar || defaultAvatar}
                     alt="User Avatar"
-                    width={32}
-                    height={32}
-                    className="h-8 w-8 rounded-full"
+                    width={38}
+                    height={38}
+                    className="h-8 w-8 rounded-full mt-2"
                   />
                 </button>
                 {dropdownVisible && (
