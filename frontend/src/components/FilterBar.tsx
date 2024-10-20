@@ -1,14 +1,17 @@
 import React, { useState, ChangeEvent } from 'react';
 import SearchBar from './SearchBar';
+import { PokeDetail } from '@/types/type_Pokemon';
 
 interface FilterBarProps {
   types: string[];
   onTypeChange: (selectedType: string) => void;
 	onSortChange: (sortBy: string) => void;
 	onSearch: (searchTerm: string) => void;
+  suggestions: PokeDetail[];
+  setSearchTerm: (term: string) => void;
 }
 
-const FilterBar: React.FC<FilterBarProps> = ({ types, onTypeChange, onSortChange, onSearch }) => {
+const FilterBar: React.FC<FilterBarProps> = ({ types, onTypeChange, onSortChange, onSearch, suggestions, setSearchTerm}) => {
   const [selectedType, setSelectedType] = useState('');
   const [sortOption, setSortOption] = useState('');
 
@@ -27,7 +30,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ types, onTypeChange, onSortChange
   return (
     <div className="p-4 bg-white rounded-lg flex items-center space-x-4 flex-wrap justify-center">
 
-			<SearchBar onSearch={onSearch} />
+			<SearchBar onSearch={onSearch} suggestions={suggestions} setSearchTerm={setSearchTerm}/>
 
       <div className="mr-4 mb-4">
         <select

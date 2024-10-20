@@ -20,6 +20,10 @@ const Main: React.FC = () =>
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 32;
 
+	// Search state
+    const [searchTerm, setSearchTerm] = useState('');
+    const [suggestions, setSuggestions] = useState<PokeDetail[]>([]);
+
 	const handleTypeChange = (type: string) => {
 		setSelectedType(type);
 		setCurrentPage(1);
@@ -30,8 +34,16 @@ const Main: React.FC = () =>
 		setSortBy(sortBy);
 	};
 
-	const handleSearch = (searchTerm: string) => {
-		console.log('Searching for:', searchTerm);
+	const handleSearch = (term: string) => {
+		setSearchTerm(term);
+		if (term) {
+			const filteredSuggestions = pokeDetails.filter(pokemon =>
+				pokemon.name.toLowerCase().includes(term.toLowerCase())
+			);
+			setSuggestions(filteredSuggestions);
+		} else {
+			setSuggestions([]);
+		}
 	};
 
 	//modify this to our own api later
@@ -85,6 +97,8 @@ const Main: React.FC = () =>
 			<FilterBar
 				types={pokemonTypes}
 				onSearch={handleSearch}
+				suggestions={suggestions}
+				setSearchTerm={setSearchTerm}
 				onTypeChange={handleTypeChange}
 				onSortChange={handleSortChange}
 			/>
