@@ -9,9 +9,9 @@ import Link from 'next/link';
 const Home: React.FC = () => {
   return (
     <div>
-      <Header />
-		  <Main />
-      <Footer />
+      {/* <Header /> */}
+			<Main />
+      {/* <Footer /> */}
     </div>
   );
 };
