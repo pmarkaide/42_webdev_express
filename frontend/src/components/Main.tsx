@@ -5,7 +5,6 @@ import { Pokemon, PokeDetail } from '../types/type_Pokemon';
 import { pokemonTypes } from '../pokemonTypes'
 import PaginationBtn from './PaginationBtn';
 
-
 const Main: React.FC = () =>
 {
 	//basic data

@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import User from '../components/User';
-import Header from '../components/Header';
-import Footer from '@/components/Footer';
 
 const UserDetail: React.FC = () => {
   const router = useRouter();
@@ -16,9 +14,7 @@ const UserDetail: React.FC = () => {
 
   return (
     <>
-      <Header />
       <User />
-      <Footer />
     </>
   );
 };

@@ -18,13 +18,16 @@ export interface PokeDetail {
   id: string;
   name: string;
 	sprites: {
-	front_default: string;
-    other: {
-      showdown: {
-        front_default: string;
-        back_default: string;
-      };
-    };
+		front_default: string;
+		other: {
+			home: {
+				front_default: string;
+			},
+			showdown: {
+				front_default: string;
+				back_default: string;
+			};
+		};
   };
   height: number;
   weight: number;
