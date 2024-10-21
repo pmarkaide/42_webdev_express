@@ -17,10 +17,8 @@ const login = async (req, res) => {
     return res.status(401).json({ message: 'Invalid username or password' });
   }
 
-  // Successful login - generate JWT token
-  const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '15min' });
 
-  // Send the token back to the client
   res.status(200).json({ message: 'Login successful', token });
 };
 

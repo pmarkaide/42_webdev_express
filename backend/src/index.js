@@ -15,10 +15,12 @@ const { authenticateToken } = require('./auth/authMiddleware');
 app.use(express.json())
 
 // Example route to fetch Pokémon data from an external API
-app.get('/', async (req, res) => {
+app.get('/api/pokemons', async (req, res) => {
   try {
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
+		const offset = req.query.offset || 0;
+		const limit = req.query.limit || 32;
 
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
     // Sending the fetched data back to the frontend
 	res.json(response.data);
   } catch (error) {
