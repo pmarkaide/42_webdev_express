@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import { User } from '@/types/type_User';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
+import EditProfileForm from '@/components/EditProfileForm';
+import FriendsList from '@/components/FriendsList';
 
 const UserDetail: React.FC = () => {
   const router = useRouter();
@@ -12,28 +14,43 @@ const UserDetail: React.FC = () => {
   const [user, setUser] = useState<User>();
   const [likedPokemons, setLikedPokemons] = useState<any[]>([]);
   const [userInLocalStorage, setUserInLocalStorage] = useState<User | null>(null);
+	const [isEditModalOpen, setEditModalOpen] = useState(false);
+
+	const [friends, setFriends] = useState<{ id: number; name: string }[]>([]);
+	const [showFriendsList, setShowFriendsList] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
-    } else {
-      fetchUserDetails(token);
+		} else {
+			const user_from_ls = localStorage.getItem('user');
+			console.log(user_from_ls)
+			if (user_from_ls)
+			{
+				const parsedUser = JSON.parse(user_from_ls);
+        setUser(parsedUser);
+			}
+			else
+			{
+				fetchUserDetails(token);
+			}
     }
   }, [router]);
 
-  useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (user) {
-      setUserInLocalStorage(JSON.parse(user));
-    }
-  }, []);
+  // useEffect(() => {
+	// 	const user = localStorage.getItem('user');
+	// 	console.log(user)
+  //   if (user) {
+  //     setUserInLocalStorage(JSON.parse(user));
+  //   }
+  // }, []);
 
   const fetchUserDetails = async (token: string) => {
-    if (userInLocalStorage) {
-      const user = userInLocalStorage;
-      setUser(user);
-    } else {
+    // if (userInLocalStorage) {
+    //   const user = userInLocalStorage;
+    //   setUser(user);
+    // } else {
       try {
         const response = await fetch('/api/user', {
           headers: {
@@ -42,11 +59,16 @@ const UserDetail: React.FC = () => {
         });
         const data = await response.json();
         setUser(data.user);
-        setLikedPokemons(data.likedPokemons);
+				setLikedPokemons(data.likedPokemons);
+				setFriends(data.friends || []);
       } catch (error) {
         console.error('Failed to fetch user data:', error);
       }
-    }
+    // }
+	};
+
+	const toggleFriendsList = () => {
+    setShowFriendsList(prev => !prev);
   };
 
   // Calculate experience progress
@@ -57,14 +79,29 @@ const UserDetail: React.FC = () => {
     return (exp / expRequiredForNextLevel) * 100; // Returns percentage
   };
 
+  // Function to open the edit modal
+  const handleEditProfileClick = () => {
+    setEditModalOpen(true);
+  };
+
+  // Function to close the edit modal
+  const closeEditModal = () => {
+    setEditModalOpen(false);
+	};
+
+	const closeFriendList = () =>
+	{
+		setShowFriendsList(false);
+	}
+
   return (
-    <div className="flex flex-col mt-36">
-			<div className="md:hidden">
-        <Topbar />
+		<div className="flex flex-col mt-36 w-10/12 mx-auto">
+      <div className="md:hidden">
+        <Topbar onFriendsClick={toggleFriendsList}/>
       </div>
       <div className="flex flex-1">
         <div className="hidden md:block">
-          <Sidebar />
+					<Sidebar onEditProfileClick={handleEditProfileClick} onFriendsClick={toggleFriendsList}/>
         </div>
         <main className="flex-1 p-6 bg-white shadow-lg rounded-lg">
           <div className="flex items-center space-x-6 mb-6">
@@ -80,6 +117,12 @@ const UserDetail: React.FC = () => {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{user?.name}</h1>
               <p className="text-gray-600">{user?.email}</p>
+              {/* <button
+                onClick={handleEditProfileClick}
+                className="text-blue-500 hover:underline mt-2"
+              >
+                Edit Profile
+              </button> */}
             </div>
           </div>
           <div className="mb-6">
@@ -120,6 +163,13 @@ const UserDetail: React.FC = () => {
           </div>
         </main>
       </div>
+      {isEditModalOpen && (
+        <EditProfileForm
+          onClose={closeEditModal}
+          initialData={{ name: user?.name || '', email: user?.email || '' }}
+        />
+			)}
+			{showFriendsList && <FriendsList friends={friends} onClose={closeFriendList} />}
     </div>
   );
 };

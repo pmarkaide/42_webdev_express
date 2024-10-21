@@ -1,30 +1,44 @@
-import React from 'react';
-import Image from 'next/image';
-import { useSession } from "next-auth/react"; // Assuming you want to display the user info
+import React, { useState } from 'react';
+import { useSession } from "next-auth/react";
+import EditProfileForm from '@/components/EditProfileForm';
 
-const Topbar: React.FC = () => {
-  const { data: session } = useSession(); // Get session data for user info
+interface TopbarProps {
+  onFriendsClick: () => void;
+}
+
+const Topbar: React.FC<TopbarProps> = ({ onFriendsClick }) => {
+  const { data: session } = useSession();
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+
+  const handleEditClick = () => {
+    setEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditModalOpen(false);
+	};
+
+	const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  };
 
   return (
     <div className="flex items-center justify-between bg-white shadow-md p-4">
-      <h1 className="text-xl font-semibold text-gray-900">Pokédex</h1>
-      <div className="flex items-center space-x-4">
-        {session?.user?.image && (
-          <div className="relative w-10 h-10">
-            <Image
-              className="rounded-full border"
-              src={session.user.image}
-              alt="User Avatar"
-              layout="fill"
-              objectFit="cover"
-            />
-          </div>
-        )}
-        <span className="text-gray-800">{session?.user?.name || 'User'}</span>
-        <button className="text-blue-500 hover:underline" onClick={() => console.log("Log out")}>
+      <div className="flex-1"></div>
+      <div className="flex items-center space-x-4 justify-end">
+        <button className="text-gray-800" onClick={handleEditClick}>
+          Edit Profile
+        </button>
+        <button className="text-gray-800" onClick={onFriendsClick}>Friends</button>
+        <button className="text-blue-500 hover:underline" onClick={() => handleLogout()}>
           Log Out
         </button>
       </div>
+      {isEditModalOpen && (
+        <EditProfileForm onClose={closeEditModal} initialData={{ name: session?.user?.name || '', email: session?.user?.email || '' }} />
+      )}
     </div>
   );
 };
