@@ -4,6 +4,7 @@ import FilterBar from './FilterBar';
 import { Pokemon, PokeDetail } from '../types/type_Pokemon';
 import { pokemonTypes } from '../pokemonTypes'
 import PaginationBtn from './PaginationBtn';
+import SkeletonCard from './SkeletonCard';
 
 const Main: React.FC = () =>
 {
@@ -87,9 +88,19 @@ const Main: React.FC = () =>
 	const totalPages = Math.ceil(sortedPokemons.length / itemsPerPage);
 
 	//style this later
+	// if (loading) {
+	// 	return <div className="text-center py-4 mt-32">Loading...</div>;
+	// }
 	if (loading) {
-		return <div className="text-center py-4 mt-32">Loading...</div>;
-	}
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 mt-60">
+      {[...Array(itemsPerPage)].map((_, index) => (
+        <SkeletonCard key={index} />
+      ))}
+    </div>
+  );
+}
+
 
   return (
 		<div className='mt-32'>
