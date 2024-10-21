@@ -47,5 +47,13 @@ export const authOptions = {
 	},
   pages: {
     signIn: '/login',
+	},
+	  session: {
+    strategy: 'jwt',
+    maxAge: 60 * 60 * 24 * 7, // 7 days (session expiration)
+    updateAge: 24 * 60 * 60, // Optional: refresh session after 24 hours of inactivity
+  },
+  jwt: {
+    maxAge: 60 * 60 * 24 * 7, // 7 days (JWT expiration)
   },
 };

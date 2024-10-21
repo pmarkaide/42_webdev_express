@@ -20,6 +20,9 @@ export function GoogleSignInBtn()
 
 			if (session.accessToken) {
 				localStorage.setItem('token', session.accessToken);
+				if (session.user) {
+					localStorage.setItem('user', JSON.stringify(session.user));
+				}
 			}
 		}
 

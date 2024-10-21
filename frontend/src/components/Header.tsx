@@ -2,20 +2,18 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import pokeBall from '../assests/logo.png';
 import defaultAvatar from '../assests/default_avatar.jpg'
-
-//temp
+import { User } from '@/types/type_User';
 import { useSession } from "next-auth/react";
+import Dropdown from './Dropdown';
 
 const Header: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<{ avatar?: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 	const [dropdownVisible, setDropdownVisible] = useState(false);
 
-	//temp
 	const { data: session } = useSession();
 
 	console.log(session?.user);
-
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -25,15 +23,9 @@ const Header: React.FC = () => {
       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
       setUser(storedUser);
 		}
+	}, [session]);
 
-		//temp
-		if (session)
-		{
-      const avatar = session.user?.image || undefined; // Ensure avatar is either string or undefined
-  		setUser({ avatar }); // This correctly sets the user state
-		}
-
-  }, [session]);
+	console.log(user)
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -82,31 +74,27 @@ const Header: React.FC = () => {
                   className="inline-flex items-center justify-center rounded-full h-10 w-10"
                 >
                   <Image
-                    src={user?.avatar || defaultAvatar}
+                    src={user?.image || defaultAvatar}
                     alt="User Avatar"
                     width={38}
                     height={38}
                     className="h-8 w-8 rounded-full mt-2"
                   />
                 </button>
-                {dropdownVisible && (
-                  <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                    <div className="py-1">
-                      <a
-                        href="http://localhost:3001/user"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        See My Profile
-                      </a>
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Log Out
-                      </button>
-                    </div>
-                  </div>
-                )}
+								 <Dropdown isOpen={dropdownVisible} onClose={() => setDropdownVisible(false)}>
+                  <a
+                    href="http://localhost:3000/user"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    See My Profile
+                  </a>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Log Out
+                  </button>
+                </Dropdown>
               </div>
             ) : (
               <>
