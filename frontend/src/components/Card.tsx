@@ -36,7 +36,8 @@ const Card: React.FC<{ pokemon: PokeDetail }> = ({ pokemon }) => {
             width={80}
             height={80}
             priority={true}
-            layout="fixed"
+						layout="fixed"
+						// unoptimized
           />
         </div>
         <h2 className="text-lg font-bold text-center mt-2">{pokemon.name}</h2>

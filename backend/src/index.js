@@ -22,11 +22,52 @@ app.get('/api/pokemons', async (req, res) => {
 
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
     // Sending the fetched data back to the frontend
-	res.json(response.data);
+		res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch Pokémon data' });
   }
 });
+
+app.get('/api/pokemon-likes', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT pokemon_id, COUNT(user_id) AS likes
+      FROM favorites
+      GROUP BY pokemon_id
+    `);
+    res.json(result.rows); // Return the Pokémon likes count
+  } catch (error) {
+    console.error('Error fetching Pokémon likes:', error);
+    res.status(500).json({ error: 'Failed to fetch Pokémon likes count' });
+  }
+});
+
+// Your existing backend API route to fetch Pokémon with likes
+app.get('/api/pokemons_with_likes', async (req, res) => {
+  try {
+    // Fetch Pokémon data
+		// const pokemons = await pool.query('SELECT * FROM pokemons');
+		const offset = req.query.offset || 0;
+		const limit = req.query.limit || 32;
+
+		const pokemons = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
+
+    // Fetch likes data
+    const likes = await pool.query('SELECT * FROM favorites');
+
+    // Combine Pokémon with likes
+    const combinedData = pokemons.map(pokemon => {
+      const like = likes.find(l => l.pokemon_id === pokemon.id);
+      return { ...pokemon, likes: like ? like.likes : 0 };
+    });
+
+    res.json(combinedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 app.get('/api/users/', async (req, res) => {
   try {

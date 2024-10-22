@@ -5,6 +5,7 @@ import defaultAvatar from '../assests/default_avatar.jpg'
 import { User } from '@/types/type_User';
 import { useSession } from "next-auth/react";
 import Dropdown from './Dropdown';
+// import Heart from './Heart';
 
 const Header: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -63,10 +64,11 @@ const Header: React.FC = () => {
             </a>
             <a className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900" href="#">
               shopping center
-			</a>
-			{/* <p>searach bar Palbo</p> */}
+						</a>
+						{/* <p>searach bar Palbo</p> */}
           </div>
-          <div className="flex items-center justify-end gap-3 relative">
+					<div className="flex items-center justify-end gap-3 relative">
+						{/* <button><Heart isFilled={false} /></button> */}
             {token ? (
               <div className="relative">
                 <button

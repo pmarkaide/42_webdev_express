@@ -43,6 +43,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick })
           onClick={onFriendsClick}
         >
           Friends
+				</li>
+				<li
+          className="mb-6 cursor-pointer hover:text-blue-500"
+          // onClick={console.log("hi")}
+        >
+          bag
         </li>
         <li
           className="mb-6 cursor-pointer hover:text-blue-500"

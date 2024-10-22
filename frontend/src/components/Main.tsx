@@ -7,6 +7,9 @@ import PaginationBtn from './PaginationBtn';
 import SkeletonCard from './SkeletonCard';
 import debounce from 'lodash/debounce';
 
+const apiUrl = process.env.NEXT_PUBLIC_MY_BACKEND_API_URL;
+console.log(apiUrl) //http://localhost:3000
+
 const Main: React.FC = () =>
 {
 	//basic data
@@ -55,9 +58,9 @@ const Main: React.FC = () =>
 	useEffect(() => {
 		const fetchPokemons = async () => {
 			try {
-				const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=32');
-				const data = await response.json();
-				const pokemonDetails = data.results.map(async (pokemon: Pokemon) => {
+					const response = await fetch(`${apiUrl}/api/pokemons`);
+					const data = await response.json();
+					const pokemonDetails = data.results.map(async (pokemon: Pokemon) => {
 					const detailResponse = await fetch(pokemon.url);
 					return detailResponse.json();
 				});
@@ -72,26 +75,35 @@ const Main: React.FC = () =>
 		fetchPokemons();
 	}, []);
 
-	  useEffect(() => {
-    const fetchRemainingPokemons = async () => {
-      setLoadingMore(true); // Set loading state for more Pokémon
-      try {
-        // Fetch more Pokémon (for example, the next 100)
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?offset=32&limit=1025'); // Change offset as needed
-        const data = await response.json();
-        const pokemonDetails = await Promise.all(
-          data.results.map(async (pokemon: Pokemon) => {
-            const detailResponse = await fetch(pokemon.url);
-            return detailResponse.json();
-          })
-        );
-        setPokeDetails(prevDetails => [...prevDetails, ...pokemonDetails]); // Append new Pokémon to existing state
-      } catch (error) {
-        console.error("Error fetching more Pokémon data:", error);
-      } finally {
-        setLoadingMore(false);
-      }
-    };
+	useEffect(() => {
+	const fetchRemainingPokemons = async () => {
+		setLoadingMore(true); // Set loading state for more Pokémon
+		try {
+			// Fetch more Pokémon (for example, the next 100)
+			const response = await fetch(`${apiUrl}/api/pokemons?offset=${32}&limit=${1025}`);
+			// const response = await fetch('https://pokeapi.co/api/v2/pokemon?offset=32&limit=1025');
+			const data = await response.json();
+			const pokemonDetails = await Promise.all(
+				data.results.map(async (pokemon: Pokemon) => {
+					const detailResponse = await fetch(pokemon.url);
+					return detailResponse.json();
+				})
+			);
+			//prev
+			// setPokeDetails(prevDetails => [...prevDetails, ...pokemonDetails]); // Append new Pokémon to existing state
+			//temp_new
+			//consider usememo?
+			setPokeDetails(prevDetails => {
+				const existingNames = new Set(prevDetails.map(p => p.name)); // Set of existing Pokémon names
+				const newPokemons = pokemonDetails.filter(p => !existingNames.has(p.name)); // Filter out duplicates
+				return [...prevDetails, ...newPokemons]; // Merge without duplicates
+			});
+		} catch (error) {
+			console.error("Error fetching more Pokémon data:", error);
+		} finally {
+			setLoadingMore(false);
+		}
+	};
 
     fetchRemainingPokemons();
   }, [loading]);
