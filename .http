@@ -2,8 +2,8 @@
 # Content-Type: application/json
 
 # {
-#   "username": "test",
-#   "password": "yourPassword"
+#   "username": "trainer1",
+#   "password": "hashed_password1"
 # }
 
 
@@ -12,5 +12,6 @@ Content-Type: application/json
 
 {
   "username": "rich",
-  "password": "yourPassword"
+  "password": "yourPassword",
+	"email": "123@gmail.com"
 }

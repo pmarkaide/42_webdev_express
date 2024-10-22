@@ -12,6 +12,8 @@ const { register } = require('./auth/register');
 const { login } = require('./auth/login');
 const { authenticateToken } = require('./auth/authMiddleware');
 
+const { getUserById, getAllUsers, getUserFavorites } = require('./user/user');
+
 app.use(express.json())
 
 // Example route to fetch Pokémon data from an external API
@@ -114,28 +116,15 @@ app.get('/api/pokemons_with_likes', async (req, res) => {
   }
 });
 
-
-
-app.get('/api/users/', async (req, res) => {
-  try {
-    const users = await pool.query('SELECT username FROM users');
-
-   if (users.rows.length === 0) {
-      return res.status(404).json({ message: 'No users found' });
-    }
-
-    res.json({ users: users.rows });
-  } catch (err) {
-    console.error('Error executing query:', err.message);
-    res.status(500).json({ error: 'Internal server error', details: err.message });
-  }
-});
-
 app.post('/api/register', register);
 app.post('/api/login', login);
 app.get('/api/protected', authenticateToken, (req, res) => {
   res.json({ message: 'This is a protected route.', user: req.user });
 });
+
+app.get('/api/users', getAllUsers);
+app.get('/api/users/:id', getUserById);
+app.get('/api/users/:id/favorites', getUserFavorites);
 
 // Check database connection
 pool.connect()

@@ -13,14 +13,15 @@ const Card: React.FC<{ pokemon: PokeDetail }> = ({ pokemon }) => {
 
   return (
     <Link href={`/pokemon/${pokemon.id}`} passHref>
-      <div key={pokemon.name} className="border rounded-lg shadow-lg p-4 bg-white relative">
+			<div key={pokemon.name} className="border rounded-lg shadow-lg p-4 bg-white relative">
+				{pokemon.likes === 0 ? null : <span className='absolute top-5 right-11'>{pokemon.likes}</span> }
         <button
           onClick={(e) => {
             e.preventDefault();
 						setIsFilled(!isFilled)
 					}}
           className="absolute top-6 right-5 focus:outline-none w-5"
-        >
+				>
           <Heart isFilled={isFilled} />
         </button>
         <div className="flex justify-center items-center">

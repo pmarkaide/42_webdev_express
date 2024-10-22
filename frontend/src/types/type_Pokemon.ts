@@ -16,7 +16,8 @@ export interface TypeSlot {
 
 export interface PokeDetail {
   id: string;
-  name: string;
+	name: string;
+	likes: number;
 	sprites: {
 		front_default: string;
 		other: {

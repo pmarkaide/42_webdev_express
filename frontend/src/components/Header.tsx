@@ -3,43 +3,37 @@ import Image from 'next/image';
 import pokeBall from '../assests/logo.png';
 import defaultAvatar from '../assests/default_avatar.jpg'
 import { User } from '@/types/type_User';
-import { useSession } from "next-auth/react";
 import Dropdown from './Dropdown';
 // import Heart from './Heart';
 
 const Header: React.FC = () => {
-  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 	const [dropdownVisible, setDropdownVisible] = useState(false);
 
-	const { data: session } = useSession();
+	useEffect(() => {
+		const userFromLS = localStorage.getItem('user');
+		const parsedUser = userFromLS ? JSON.parse(userFromLS) : null;
 
-	console.log(session?.user);
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    setToken(storedToken);
-
-    if (storedToken) {
-      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-      setUser(storedUser);
+		console.log(parsedUser)
+		if (parsedUser && parsedUser.username) {
+			setUser(parsedUser);
+		} else {
+			setUser(null);
 		}
-	}, [session]);
-
-	console.log(user)
+	}, []);
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
 
-  const handleLogout = () => {
+	const handleLogout = () =>
+	{
+    setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    setToken(null);
-    setUser(null);
     setDropdownVisible(false);
     window.location.href = '/login';
-  };
+	};
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 mx-auto w-full max-w-screen-md border border-gray-100 bg-white/80 py-3 shadow backdrop-blur-lg md:top-6 md:rounded-3xl lg:max-w-screen-lg">
@@ -69,7 +63,7 @@ const Header: React.FC = () => {
           </div>
 					<div className="flex items-center justify-end gap-3 relative">
 						{/* <button><Heart isFilled={false} /></button> */}
-            {token ? (
+            {user ? (
               <div className="relative">
                 <button
                   onClick={toggleDropdown}

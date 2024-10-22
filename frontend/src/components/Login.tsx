@@ -27,7 +27,13 @@ const Login: React.FC = () => {
 			const data = await response.json();
 			console.log('Login successful:', data);
 
+			console.log(data.user)
+
+			const newData = JSON.stringify(data.user);
+			console.log(newData)
+
 			localStorage.setItem('token', data.token);
+			localStorage.setItem('user', JSON.stringify(data.user));
 			redirect.push('/');
 		} catch (error) {
 			console.error(error)
