@@ -9,7 +9,6 @@ import debounce from 'lodash/debounce';
 import { CgArrowLongRight } from 'react-icons/cg';
 
 const apiUrl = process.env.NEXT_PUBLIC_MY_BACKEND_API_URL;
-console.log(apiUrl) //http://localhost:3000
 
 const Main: React.FC = () =>
 {

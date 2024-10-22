@@ -6,21 +6,25 @@ import { User } from '@/types/type_User';
 import Dropdown from './Dropdown';
 // import Heart from './Heart';
 
-const Header: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+interface HeaderProps {
+  user: User | null; // Add user prop
+	setUser: (user: User | null) => void; // Add setUser prop
+}
+
+const Header: React.FC<HeaderProps> = ({user, setUser}) => {
+  // const [user, setUser] = useState<User | null>(null);
 	const [dropdownVisible, setDropdownVisible] = useState(false);
 
-	useEffect(() => {
-		const userFromLS = localStorage.getItem('user');
-		const parsedUser = userFromLS ? JSON.parse(userFromLS) : null;
+	// useEffect(() => {
+	// 	const userFromLS = localStorage.getItem('user');
+	// 	const parsedUser = userFromLS ? JSON.parse(userFromLS) : null;
 
-		console.log(parsedUser)
-		if (parsedUser && parsedUser.username) {
-			setUser(parsedUser);
-		} else {
-			setUser(null);
-		}
-	}, []);
+	// 	if (parsedUser && parsedUser.username) {
+	// 		setUser(parsedUser);
+	// 	} else {
+	// 		setUser(null);
+	// 	}
+	// }, []);
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);

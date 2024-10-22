@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleSignInBtn } from './GoogleSignInBtn';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -22,7 +24,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 mt-6">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
 				<h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
 				<GoogleSignInBtn />

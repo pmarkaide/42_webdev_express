@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import {GoogleSignInBtn} from './GoogleSignInBtn';
+import { GoogleSignInBtn } from './GoogleSignInBtn';
+import { ToastContainer, toast } from 'react-toastify'; // Add ToastPosition import
+import 'react-toastify/dist/ReactToastify.css';
+import { User } from '@/types/type_User';
 
-const Login: React.FC = () => {
+interface LoginProps
+{
+	setUser: (user: User | null) => void;
+}
+
+// const Login: React.FC = () => {
+const Login: React.FC<LoginProps> = ({setUser}) => {
   const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
 
 	const redirect = useRouter();
 
@@ -19,24 +29,27 @@ const Login: React.FC = () => {
 				},
 				body: JSON.stringify({ username, password }),
 			});
-
 			if (!response.ok) {
 				throw new Error('Login failed');
 			}
-
 			const data = await response.json();
-			console.log('Login successful:', data);
-
-			console.log(data.user)
-
-			const newData = JSON.stringify(data.user);
-			console.log(newData)
-
 			localStorage.setItem('token', data.token);
 			localStorage.setItem('user', JSON.stringify(data.user));
-			redirect.push('/');
+			toast.success('Login successful!', {
+        position: 'top-center',
+        autoClose: 2000,
+      });
+			setTimeout(() =>
+			{
+				setUser(data.user)
+        redirect.push('/');
+      }, 2000);
 		} catch (error) {
 			console.error(error)
+			toast.error('Invalid username or password.', {
+        position: 'bottom-center',
+        autoClose: 3000,
+      });
 		}
 	};
 
@@ -61,23 +74,32 @@ return (
 					</div>
 					<div className="mb-4">
 						<label htmlFor="password" className="block text-sm font-medium text-gray-700">
-							Password:
-						</label>
-						<input
-							type="password"
-							id="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							required
-							className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 focus:border-blue-500"
-						/>
+              Password:
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'} // Toggle between text and password
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 focus:border-blue-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)} // Toggle password visibility
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-gray-500"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+							</button>
+						</div>
 					</div>
 					<button
 						type="submit"
 						className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200"
 					>
 						Login
-					</button>
+				</button>
 				</form>
 				<div className="mt-4 text-center">
 					<p>
@@ -88,6 +110,7 @@ return (
 					</p>
 				</div>
 			</div>
+			<ToastContainer />
 		</div>
   );
 };
