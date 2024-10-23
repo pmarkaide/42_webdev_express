@@ -67,35 +67,6 @@ const getUserById = async (req, res) => {
   }
 };
 
-// const getAllUsers = async (req, res) => {
-// 	try {
-// 		const result = await pool.query('SELECT * FROM users');
-// 		if (result.rows.length === 0) {
-// 			return res.status(404).json({ message: 'No users found' });
-// 		}
-// 		res.json(result.rows);
-// 	} catch (error) {
-// 		console.error('Error fetching users:', error);
-// 		res.status(500).json({ error: 'Internal server error' });
-// 	}
-// };
-
-// const getUserById = async (req, res) =>
-// {
-//   const { id } = req.params;
-//   try {
-//     const result = await pool.query('SELECT * FROM users WHERE user_id = $1', [id]);
-//     if (result.rows.length === 0) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-//     res.json(result.rows[0]);
-//   } catch (error) {
-//     console.error('Error fetching user:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
-
-
 // Fetch Pokémon details by user ID
 const getUserFavorites = async (req, res) => {
   const { id } = req.params;
@@ -132,4 +103,33 @@ const getUserFavorites = async (req, res) => {
   }
 };
 
-module.exports = { getUserById, getAllUsers, getUserFavorites };
+const addFavoritePokemon = async (req, res) => {
+  const { userId, pokemonId } = req.body;
+	console.log(userId)
+	console.log(pokemonId)
+  try {
+    // Check if the user already has this Pokémon as a favorite
+    const existingFavorite = await pool.query(
+      'SELECT * FROM favorites WHERE user_id = $1 AND pokemon_id = $2',
+      [userId, pokemonId]
+    );
+
+    if (existingFavorite.rows.length > 0) {
+      return res.status(400).json({ message: 'This Pokémon is already in your favorites' });
+    }
+
+    // Insert the new favorite into the favorites table
+    await pool.query(
+      'INSERT INTO favorites (user_id, pokemon_id) VALUES ($1, $2)',
+      [userId, pokemonId]
+    );
+
+    res.status(201).json({ message: 'Favorite Pokémon added successfully' });
+  } catch (error) {
+    console.error('Error adding favorite Pokémon:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+module.exports = { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon };

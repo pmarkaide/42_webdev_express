@@ -4,9 +4,12 @@ import Image from 'next/image';
 import { PokeDetail } from '../types/type_Pokemon';
 import { typeColors } from '../pokemonTypes';
 import Heart from './Heart';
+import { User } from '@/types/type_User';
 
-const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean }> = ({ pokemon, userPageMode = false, isFavorite}) => {
+const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean, user: User }> = ({ pokemon, userPageMode = false, isFavorite, user}) => {
 	const [isFilled, setIsFilled] = useState(isFavorite);
+
+	console.log(user)
 
 	useEffect(() => {
     if (userPageMode) {
@@ -21,16 +24,16 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
 	};
 
 	const toggleFavorite = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsFilled(prev => !prev); // Toggle the visual state
+		e.preventDefault();
+		setIsFilled(prev => !prev); // Toggle the visual state (frontend)
 
-    const response = await fetch('/api/users/favorites', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/favorites`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userId: userId,
+        userId: user.user_id,
         pokemonId: pokemon.id,
       }),
     });

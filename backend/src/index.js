@@ -12,7 +12,7 @@ const { register } = require('./auth/register');
 const { login } = require('./auth/login');
 const { authenticateToken } = require('./auth/authMiddleware');
 
-const { getUserById, getAllUsers, getUserFavorites } = require('./user/user');
+const { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon } = require('./user/user');
 
 app.use(express.json())
 
@@ -125,6 +125,7 @@ app.get('/api/protected', authenticateToken, (req, res) => {
 app.get('/api/users', getAllUsers);
 app.get('/api/users/:id', getUserById);
 app.get('/api/users/:id/favorites', getUserFavorites);
+app.post('/api/users/favorites', addFavoritePokemon);
 
 // Check database connection
 pool.connect()

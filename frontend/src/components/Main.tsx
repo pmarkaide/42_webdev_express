@@ -19,8 +19,6 @@ interface MainProps {
 
 const Main: React.FC<MainProps> = ({user, setUser}) =>
 {
-	console.log(user)
-
 	const router = useRouter();
 	//basic data
 	const [pokeDetails, setPokeDetails] = useState<PokeDetail[]>([]);
@@ -201,9 +199,9 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 			/>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
 				{currentPokemons.map((pokemon) => (
-					<Card key={pokemon.name} pokemon={pokemon} userPageMode={false} isFavorite={user?.favorite_pokemon_ids?.includes(pokemon.id)} />
+					<Card key={pokemon.name} pokemon={pokemon} userPageMode={false} isFavorite={user?.favorite_pokemon_ids?.includes(pokemon.id)} user={user} />
 				))}
-			</div>
+		</div>
 			<PaginationBtn totalPages={totalPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
 		</div>
   );
