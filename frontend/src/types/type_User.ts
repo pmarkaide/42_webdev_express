@@ -1,9 +1,14 @@
-export interface User {
-  name: string;
-  email: string;
+import { PokeDetail } from "./type_Pokemon";
+
+export interface User
+{
+	name?: string;
+	username?: string;
+	email: string;
 	image?: string;
+	favorites?: PokeDetail;
 	level: number;
-  exp: number;       // Experience points
-  pokcoin: number;   // Pokémon coins
-  friends: Array<string>; // Array of friend IDs or names
+	exp: number;
+	pokcoin: number;
+	friends: Array<string>;
 }

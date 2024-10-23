@@ -2,8 +2,18 @@ import React, { useState } from 'react';
 import { GoogleSignInBtn } from './GoogleSignInBtn';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { User } from '@/types/type_User';
+import { useRouter } from 'next/router';
 
-const SignUp = () => {
+interface SignUpProps
+{
+	setUser: (user: User | null) => void;
+}
+
+const SignUp: React.FC<SignUpProps> = ({setUser}) =>
+{
+	const redirect = useRouter();
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -17,11 +27,44 @@ const SignUp = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // handle sign up logic here
-    console.log(formData);
-  };
+
+		try {
+			const response = await fetch('http://localhost:3000/api/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(formData),
+			});
+
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data.message || 'Sign Up failed');
+			}
+			// const data = await response.json();
+
+			localStorage.setItem('token', data.token);
+			localStorage.setItem('user', JSON.stringify(data.user));
+			toast.success('Sign up successful!', {
+				position: 'top-center',
+				autoClose: 2000,
+			});
+			setTimeout(() =>
+			{
+				setUser(data.user)
+				redirect.push('/');
+			}, 2000);
+		} catch (err) {
+			const error = err as Error;
+			console.error(error)
+			toast.error(error.message, {
+        position: 'bottom-center',
+        autoClose: 3000,
+      });
+		}
+	};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 mt-6">
@@ -89,7 +132,8 @@ const SignUp = () => {
             Log in
           </a>
         </p>
-      </div>
+			</div>
+			<ToastContainer />
     </div>
   );
 };

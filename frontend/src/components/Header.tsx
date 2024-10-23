@@ -15,16 +15,19 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
   // const [user, setUser] = useState<User | null>(null);
 	const [dropdownVisible, setDropdownVisible] = useState(false);
 
-	// useEffect(() => {
-	// 	const userFromLS = localStorage.getItem('user');
-	// 	const parsedUser = userFromLS ? JSON.parse(userFromLS) : null;
+	useEffect(() => {
+		const userFromLS = localStorage.getItem('user');
+		const token = localStorage.getItem('token');
+		console.log(token)
 
-	// 	if (parsedUser && parsedUser.username) {
-	// 		setUser(parsedUser);
-	// 	} else {
-	// 		setUser(null);
-	// 	}
-	// }, []);
+		const parsedUser = userFromLS ? JSON.parse(userFromLS) : null;
+
+		if (parsedUser && parsedUser.username) {
+			setUser(parsedUser);
+		} else {
+			setUser(null);
+		}
+	}, []);
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -83,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
                 </button>
 								 <Dropdown isOpen={dropdownVisible} onClose={() => setDropdownVisible(false)}>
                   <a
-                    href="http://localhost:3000/user"
+										href={`${process.env.NEXT_PUBLIC_MY_FRONTEND_API_URL}/user`}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     See My Profile

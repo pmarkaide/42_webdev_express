@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
-const { findUserByUsername, createUser } = require('./userModel');
+const jwt = require('jsonwebtoken'); // Import JWT library
+const { findUserByUsername, findUserByEmail, findFavoritesByUserId, createUser } = require('./userModel');
 
 const register = async (req, res) => {
   const { username, password, email } = req.body;
@@ -10,7 +11,7 @@ const register = async (req, res) => {
     return res.status(400).json({ message: 'Username already taken' });
 	}
 
-	const existingEmail = await findUserByUsername(email);
+	const existingEmail = await findUserByEmail(email);
   if (existingEmail) {
     return res.status(400).json({ message: 'Email already taken' });
   }
@@ -19,8 +20,17 @@ const register = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Create a new user
-  const newUser = await createUser(username, email, hashedPassword);
-  res.status(201).json({ message: 'User created', user: newUser });
+	const newUser = await createUser(username, email, hashedPassword);
+
+	const { password_hash, ...userWithoutPassword } = newUser;
+
+  const token = jwt.sign({ id: newUser.id, username: newUser.username }, process.env.JWT_SECRET, {
+    expiresIn: '1h', // Token expires in 1 hour
+	});
+
+	const favoritePokemons = await findFavoritesByUserId(user.user_id);
+
+	res.status(201).json({ message: 'User created', token, user: { ...userWithoutPassword, favoritePokemons } });
 };
 
 module.exports = { register };

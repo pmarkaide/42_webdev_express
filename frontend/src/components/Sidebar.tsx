@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { User } from 'next-auth';
 
-interface SidebarProps {
+interface SidebarProps
+{
+	// user: User | null;
 	onEditProfileClick: () => void;
 	onFriendsClick: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick }) => {
   const router = useRouter();
-  const [user, setUser] = useState<{ name: string } | null>(null); // Adjust the type based on your user structure
+	const [user, setUser] = useState<{ name?: string } | {username?: string} | null>(null);
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -30,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick })
 
   return (
     <div className="md:translate-x-0 md:shadow-none md:w-64 h-full border border-gray-300 rounded-lg p-4">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">Hi, {user?.name}</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-800">Hi, {user?.username || user?.name}</h2>
       <ul className='pt-6'>
         <li
           className="mb-6 cursor-pointer hover:text-blue-500"

@@ -7,64 +7,61 @@ import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
 import EditProfileForm from '@/components/EditProfileForm';
 import FriendsList from '@/components/FriendsList';
+import { PokeDetail, Pokemon } from '@/types/type_Pokemon';
+import defaultAvatar from '@/assests/default_avatar.jpg'
 
-const UserDetail: React.FC = () => {
+interface UserDetailProps {
+  user: User | null; // Add user prop
+	setUser: (user: User | null | string) => void; // Add setUser prop
+}
+
+const UserDetail: React.FC<UserDetailProps> = ({user, setUser}) => {
   const router = useRouter();
-  const { data: session } = useSession();
-  const [user, setUser] = useState<User>();
-  const [likedPokemons, setLikedPokemons] = useState<any[]>([]);
-  const [userInLocalStorage, setUserInLocalStorage] = useState<User | null>(null);
+  // const { data: session } = useSession();
+  // const [user, setUser] = useState<User>();
+  // const [likedPokemons, setLikedPokemons] = useState<Pokemon[]>([]);
+  // const [userInLocalStorage, setUserInLocalStorage] = useState<null | string>(null);
 	const [isEditModalOpen, setEditModalOpen] = useState(false);
 
 	const [friends, setFriends] = useState<{ id: number; name: string }[]>([]);
 	const [showFriendsList, setShowFriendsList] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+		const token = localStorage.getItem('token');
+
     if (!token) {
       router.push('/login');
 		} else {
 			const user_from_ls = localStorage.getItem('user');
 			console.log(user_from_ls)
+			// setUserInLocalStorage(user_from_ls)
 			if (user_from_ls)
 			{
 				const parsedUser = JSON.parse(user_from_ls);
-        setUser(parsedUser);
-			}
-			else
-			{
-				fetchUserDetails(token);
+				fetchUserDetails(parsedUser.user_id);
+				// setUser(parsedUser);
 			}
     }
-  }, [router]);
+	}, [router]);
 
-  // useEffect(() => {
-	// 	const user = localStorage.getItem('user');
-	// 	console.log(user)
-  //   if (user) {
-  //     setUserInLocalStorage(JSON.parse(user));
-  //   }
-  // }, []);
+	// useEffect(() => {
+  //   console.log(user); // This will show the updated user
+  // }, [user]); // Dependency array to trigger when `user` changes
 
-  const fetchUserDetails = async (token: string) => {
-    // if (userInLocalStorage) {
-    //   const user = userInLocalStorage;
-    //   setUser(user);
-    // } else {
-      try {
-        const response = await fetch('/api/user', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        setUser(data.user);
-				setLikedPokemons(data.likedPokemons);
-				setFriends(data.friends || []);
-      } catch (error) {
-        console.error('Failed to fetch user data:', error);
-      }
-    // }
+	const fetchUserDetails = async (id: number) =>
+	{
+		console.log(id)
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/${id}`, {
+			});
+			const data = await response.json();
+			console.log(data)
+			setUser(data);
+			// setLikedPokemons(data.likedPokemons);
+			setFriends(data.friends || []);
+		} catch (error) {
+			console.error('Failed to fetch user data:', error);
+		}
 	};
 
 	const toggleFriendsList = () => {
@@ -76,7 +73,7 @@ const UserDetail: React.FC = () => {
     if (!user) return 0;
     const { exp, level } = user;
     const expRequiredForNextLevel = level * 100;
-    return (exp / expRequiredForNextLevel) * 100; // Returns percentage
+    return (exp / expRequiredForNextLevel) * 100;
   };
 
   // Function to open the edit modal
@@ -94,6 +91,8 @@ const UserDetail: React.FC = () => {
 		setShowFriendsList(false);
 	}
 
+	console.log(user)
+
   return (
 		<div className="flex flex-col mt-36 w-10/12 mx-auto">
       <div className="md:hidden">
@@ -101,21 +100,21 @@ const UserDetail: React.FC = () => {
       </div>
       <div className="flex flex-1">
         <div className="hidden md:block">
-					<Sidebar onEditProfileClick={handleEditProfileClick} onFriendsClick={toggleFriendsList}/>
+					<Sidebar onEditProfileClick={handleEditProfileClick} onFriendsClick={toggleFriendsList} />
         </div>
         <main className="flex-1 p-6 bg-white shadow-lg rounded-lg">
           <div className="flex items-center space-x-6 mb-6">
             <div className="relative w-24 h-24">
               <Image
                 className="rounded-full border"
-                src={user?.image || '/default-avatar.png'}
+                src={user?.image || defaultAvatar}
                 alt={`${user?.name}'s avatar`}
                 layout="fill"
                 objectFit="cover"
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{user?.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{user?.name || user?.username}</h1>
               <p className="text-gray-600">{user?.email}</p>
               {/* <button
                 onClick={handleEditProfileClick}
@@ -140,15 +139,15 @@ const UserDetail: React.FC = () => {
 
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Liked Pokémon</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {likedPokemons.length > 0 ? (
-              likedPokemons.map((pokemon) => (
+            {user?.favorites? (
+              user?.favorites?.map((pokemon: PokeDetail) => (
                 <div
                   key={pokemon.id}
                   className="p-4 bg-gray-100 rounded-lg flex flex-col items-center shadow-md"
                 >
                   <Image
                     className="mb-2"
-                    src={pokemon.image}
+                    src={pokemon.sprites.other.showdown.front_default}
                     alt={pokemon.name}
                     width={80}
                     height={80}

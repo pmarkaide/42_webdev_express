@@ -1,10 +1,16 @@
 import React from 'react'
 import SignUp from '@/components/SignUp';
+import { User } from '@/types/type_User';
 
-const signup: React.FC = () => {
+interface SignUpProps
+{
+	setUser: (user: User | null) => void;
+}
+
+const signup: React.FC<SignUpProps> = ({setUser}) => {
 	return (
 		<div>
-			<SignUp />
+			<SignUp setUser={setUser} />
 		</div>
   );
 }

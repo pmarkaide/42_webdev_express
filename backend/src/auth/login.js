@@ -21,7 +21,9 @@ const login = async (req, res) => {
 
 	const { password_hash, ...userWithoutPassword } = user;
 
-  const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '15min' });
+	const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '15min' });
+
+	// const favoritePokemons = await findFavoritesByUserId(user.id);
 
   res.status(200).json({ message: 'Login successful', token, user: userWithoutPassword});
 };
