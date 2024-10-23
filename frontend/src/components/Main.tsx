@@ -6,12 +6,22 @@ import { pokemonTypes } from '../pokemonTypes'
 import PaginationBtn from './PaginationBtn';
 import SkeletonCard from './SkeletonCard';
 import debounce from 'lodash/debounce';
-import { CgArrowLongRight } from 'react-icons/cg';
+import {User} from '@/types/type_User';
+import { useRouter } from 'next/router';
+import { CgPokemon } from 'react-icons/cg';
 
 const apiUrl = process.env.NEXT_PUBLIC_MY_BACKEND_API_URL;
 
-const Main: React.FC = () =>
+interface MainProps {
+  user: User | null;
+	setUser: (user: User | null) => void;
+}
+
+const Main: React.FC<MainProps> = ({user, setUser}) =>
 {
+	console.log(user)
+
+	const router = useRouter();
 	//basic data
 	const [pokeDetails, setPokeDetails] = useState<PokeDetail[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -26,8 +36,39 @@ const Main: React.FC = () =>
 	const itemsPerPage = 32;
 
 	// Search state
-    const [searchTerm, setSearchTerm] = useState('');
-    const [suggestions, setSuggestions] = useState<PokeDetail[]>([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [suggestions, setSuggestions] = useState<PokeDetail[]>([]);
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+
+		if (!token) {
+			router.push('/login');
+		} else {
+			const user_from_ls = localStorage.getItem('user');
+			console.log(user_from_ls)
+			// setUserInLocalStorage(user_from_ls)
+			if (user_from_ls)
+			{
+				const parsedUser = JSON.parse(user_from_ls);
+				fetchUserDetails(parsedUser.user_id);
+				// setUser(parsedUser);
+			}
+		}
+	}, [router]);
+
+	const fetchUserDetails = async (id: number) =>
+	{
+		console.log(id)
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/${id}`, {
+			});
+			const data = await response.json();
+			setUser(data);
+		} catch (error) {
+			console.error('Failed to fetch user data:', error);
+		}
+	};
 
 	const handleTypeChange = (type: string) => {
 		setSelectedType(type);
@@ -53,6 +94,8 @@ const Main: React.FC = () =>
 		}, 300),
 		[pokeDetails]
 	);
+
+	console.log(user)
 
 	//modify this to our own api later
 	useEffect(() => {
@@ -81,7 +124,6 @@ const Main: React.FC = () =>
 	const fetchRemainingPokemons = async () => {
 		setLoadingMore(true); // Set loading state for more Pokémon
 		try {
-			// Fetch more Pokémon (for example, the next 100)
 			const response = await fetch(`${apiUrl}/api/pokemons_with_likes?offset=${32}&limit=${1025}`);
 			// const response = await fetch('https://pokeapi.co/api/v2/pokemon?offset=32&limit=1025');
 			const data = await response.json();
@@ -96,6 +138,11 @@ const Main: React.FC = () =>
 			// setPokeDetails(prevDetails => [...prevDetails, ...pokemonDetails]); // Append new Pokémon to existing state
 			//temp_new
 			//consider usememo?
+
+			if (!Array.isArray(data)) {
+				console.error("Expected data to be an array, but got:", data);
+				return; // Exit if the data is not an array
+			}
 			setPokeDetails(prevDetails => {
 				const existingNames = new Set(prevDetails.map(p => p.name)); // Set of existing Pokémon names
 				const newPokemons = data.filter((p: PokeDetail) => !existingNames.has(p.name)); // Filter out duplicates
@@ -154,7 +201,7 @@ const Main: React.FC = () =>
 			/>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
 				{currentPokemons.map((pokemon) => (
-					<Card key={pokemon.name} pokemon={pokemon} />
+					<Card key={pokemon.name} pokemon={pokemon} userPageMode={false} isFavorite={user?.favorite_pokemon_ids?.includes(pokemon.id)} />
 				))}
 			</div>
 			<PaginationBtn totalPages={totalPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />

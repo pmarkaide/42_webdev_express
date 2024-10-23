@@ -7,8 +7,8 @@ import Dropdown from './Dropdown';
 // import Heart from './Heart';
 
 interface HeaderProps {
-  user: User | null; // Add user prop
-	setUser: (user: User | null) => void; // Add setUser prop
+  user: User | null;
+	setUser: (user: User | null) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({user, setUser}) => {

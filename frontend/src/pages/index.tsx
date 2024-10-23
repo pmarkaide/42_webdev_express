@@ -1,10 +1,16 @@
 import React from 'react';
 import Main from '../components/Main';
+import { User } from '@/types/type_User';
 
-const Home: React.FC = () => {
+interface HomeProps {
+  user: User | null;
+	setUser: (user: User | null) => void;
+}
+
+const Home: React.FC<HomeProps> = ({user, setUser}) => {
   return (
     <div>
-			<Main />
+			<Main user={user} setUser={setUser}/>
     </div>
   );
 };

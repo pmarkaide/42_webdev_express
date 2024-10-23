@@ -11,4 +11,5 @@ export interface User
 	exp: number;
 	pokcoin: number;
 	friends: Array<string>;
+	favorite_pokemon_ids: number[];
 }

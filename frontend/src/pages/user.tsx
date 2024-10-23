@@ -9,13 +9,17 @@ import EditProfileForm from '@/components/EditProfileForm';
 import FriendsList from '@/components/FriendsList';
 import { PokeDetail, Pokemon } from '@/types/type_Pokemon';
 import defaultAvatar from '@/assests/default_avatar.jpg'
+import Card from '@/components/Card';
 
-interface UserDetailProps {
-  user: User | null; // Add user prop
-	setUser: (user: User | null | string) => void; // Add setUser prop
+interface UserDetailProps
+{
+	user: User | null;
+	setUser: (user: User | null | string) => void;
 }
 
-const UserDetail: React.FC<UserDetailProps> = ({user, setUser}) => {
+const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
+{
+	console.log(user)
   const router = useRouter();
   // const { data: session } = useSession();
   // const [user, setUser] = useState<User>();
@@ -140,21 +144,24 @@ const UserDetail: React.FC<UserDetailProps> = ({user, setUser}) => {
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Liked Pokémon</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {user?.favorites? (
-              user?.favorites?.map((pokemon: PokeDetail) => (
-                <div
-                  key={pokemon.id}
-                  className="p-4 bg-gray-100 rounded-lg flex flex-col items-center shadow-md"
-                >
-                  <Image
-                    className="mb-2"
-                    src={pokemon.sprites.other.showdown.front_default}
-                    alt={pokemon.name}
-                    width={80}
-                    height={80}
-                    objectFit="contain"
-                  />
-                  <span className="text-lg font-semibold text-gray-800">{pokemon.name}</span>
-                </div>
+							user?.favorites?.map((pokemon: PokeDetail) => (
+								<Card key={pokemon.name} pokemon={pokemon} userPageMode={true} />
+
+                // <div
+                //   key={pokemon.id}
+                //   className="p-4 bg-gray-100 rounded-lg flex flex-col items-center shadow-md"
+								// >
+								// 	<p>yo</p>
+                //   <Image
+                //     className="mb-2"
+                //     src={pokemon.sprites.other.showdown.front_default}
+                //     alt={pokemon.name}
+                //     width={80}
+                //     height={80}
+                //     objectFit="contain"
+                //   />
+                //   <span className="text-lg font-semibold text-gray-800">{pokemon.name}</span>
+                // </div>
               ))
             ) : (
               <p className="text-gray-600">No liked Pokémon yet.</p>

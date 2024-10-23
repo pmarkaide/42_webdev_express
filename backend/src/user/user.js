@@ -35,7 +35,6 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
 	const { id } = req.params;
 
-	console.log(id)
   try {
     const result = await pool.query(`
       SELECT u.*,

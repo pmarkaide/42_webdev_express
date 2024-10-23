@@ -5,21 +5,39 @@ import { PokeDetail } from '../types/type_Pokemon';
 import { typeColors } from '../pokemonTypes';
 import Heart from './Heart';
 
-const Card: React.FC<{ pokemon: PokeDetail }> = ({ pokemon }) => {
-  const [isFilled, setIsFilled] = useState(false);
+const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean }> = ({ pokemon, userPageMode = false, isFavorite}) => {
+  const [isFilled, setIsFilled] = useState(isFavorite);
   const getColorClass = (type: keyof typeof typeColors) => {
     return typeColors[type];
+	};
+
+	const toggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsFilled(prev => !prev); // Toggle the visual state
+
+    const response = await fetch('/api/users/favorites', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: userId,
+        pokemonId: pokemon.id,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to toggle favorite:', await response.json());
+      // Optionally handle errors here
+    }
   };
 
   return (
     <Link href={`/pokemon/${pokemon.id}`} passHref>
-			<div key={pokemon.name} className="border rounded-lg shadow-lg p-4 bg-white relative">
+			<div key={pokemon.name} className={`border rounded-lg shadow-lg p-4 bg-white relative ${userPageMode ? 'bg-white' : 'bg-white'} `}>
 				{pokemon.likes === 0 ? null : <span className='absolute top-5 right-11'>{pokemon.likes}</span> }
         <button
-          onClick={(e) => {
-            e.preventDefault();
-						setIsFilled(!isFilled)
-					}}
+          onClick={toggleFavorite}
           className="absolute top-6 right-5 focus:outline-none w-5"
 				>
           <Heart isFilled={isFilled} />
