@@ -10,6 +10,8 @@ import {User} from '@/types/type_User';
 import { useRouter } from 'next/router';
 import { CgPokemon } from 'react-icons/cg';
 
+import { ToastContainer } from 'react-toastify';
+
 const apiUrl = process.env.NEXT_PUBLIC_MY_BACKEND_API_URL;
 
 interface MainProps {
@@ -155,7 +157,15 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 	};
 
     fetchRemainingPokemons();
-  }, [loading]);
+	}, [loading]);
+
+	const handleLikesChange = (pokemonId: string, newLikes: number) => {
+    setPokeDetails((prevDetails) =>
+      prevDetails.map((pokemon) =>
+        pokemon.id === pokemonId ? { ...pokemon, likes: newLikes } : pokemon
+      )
+    );
+  };
 
 	//This part translate the data array first into filtered version, and then a sorted array
 	const filteredPokemons = selectedType
@@ -189,6 +199,7 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 
   return (
 		<div className='mt-32'>
+			<ToastContainer />
 			<FilterBar
 				types={pokemonTypes}
 				onSearch={handleSearch}
@@ -199,9 +210,9 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 			/>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
 				{currentPokemons.map((pokemon) => (
-					<Card key={pokemon.name} pokemon={pokemon} userPageMode={false} isFavorite={user?.favorite_pokemon_ids?.includes(pokemon.id)} user={user} />
+					<Card key={pokemon.name} pokemon={pokemon} userPageMode={false} isFavorite={user?.favorite_pokemon_ids?.includes(pokemon.id)} user={user} onLikesChange={handleLikesChange}/>
 				))}
-		</div>
+			</div>
 			<PaginationBtn totalPages={totalPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
 		</div>
   );

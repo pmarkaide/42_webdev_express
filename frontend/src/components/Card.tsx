@@ -5,8 +5,10 @@ import { PokeDetail } from '../types/type_Pokemon';
 import { typeColors } from '../pokemonTypes';
 import Heart from './Heart';
 import { User } from '@/types/type_User';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean, user: User }> = ({ pokemon, userPageMode = false, isFavorite, user}) => {
+const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean, user: User, onLikesChange: (pokemonId: string, newLikes: number) => void }> = ({ pokemon, userPageMode = false, isFavorite, user, onLikesChange}) => {
 	const [isFilled, setIsFilled] = useState(isFavorite);
 
 	console.log(user)
@@ -25,24 +27,57 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
 
 	const toggleFavorite = async (e: React.MouseEvent) => {
 		e.preventDefault();
-		setIsFilled(prev => !prev); // Toggle the visual state (frontend)
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/favorites`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId: user.user_id,
-        pokemonId: pokemon.id,
-      }),
-    });
+		// Toggle the visual state first for a smooth UI experience
+		setIsFilled(prev => !prev);
 
-    if (!response.ok) {
-      console.error('Failed to toggle favorite:', await response.json());
-      // Optionally handle errors here
-    }
-  };
+		if (isFilled) {
+			const confirmed = window.confirm(`Are you sure you want to unlike ${pokemon.name}?`);
+			if (!confirmed) {
+				setIsFilled(prev => !prev);
+				return;
+			}
+		}
+		const newLikes = !isFilled ? pokemon.likes + 1 : pokemon.likes - 1;
+
+		onLikesChange(pokemon.id, newLikes);
+
+		// Determine the method based on whether it's already a favorite
+		const method = isFilled ? 'DELETE' : 'POST';
+
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/favorites`, {
+				method: method,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					userId: user.user_id,
+					pokemonId: pokemon.id,
+				}),
+			});
+
+			if (!response.ok) {
+				console.error('Failed to toggle favorite:', await response.json());
+				setIsFilled(prev => !prev);
+			}
+			if (method == 'DELETE')
+			{
+				toast.success(`${pokemon.name} will remember this.`, {
+					position: 'top-center',
+					autoClose: 2000,
+				});
+			}
+			else
+				toast.success(`${pokemon.name} is now your favorite.`, {
+					position: 'top-center',
+					autoClose: 2000,
+				});
+		} catch (error) {
+			console.error('Error toggling favorite:', error);
+			setIsFilled(prev => !prev);
+		}
+	};
 
   return (
     <Link href={`/pokemon/${pokemon.id}`} passHref>

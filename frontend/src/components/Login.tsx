@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { GoogleSignInBtn } from './GoogleSignInBtn';
-import { ToastContainer, toast } from 'react-toastify'; // Add ToastPosition import
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { User } from '@/types/type_User';
 

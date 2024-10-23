@@ -104,9 +104,8 @@ const getUserFavorites = async (req, res) => {
 };
 
 const addFavoritePokemon = async (req, res) => {
-  const { userId, pokemonId } = req.body;
-	console.log(userId)
-	console.log(pokemonId)
+	const { userId, pokemonId } = req.body;
+
   try {
     // Check if the user already has this Pokémon as a favorite
     const existingFavorite = await pool.query(
@@ -131,5 +130,32 @@ const addFavoritePokemon = async (req, res) => {
   }
 };
 
+const removeFavoritePokemon = async (req, res) => {
+  const { userId, pokemonId } = req.body;
 
-module.exports = { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon };
+  try {
+    const existingFavorite = await pool.query(
+      'SELECT * FROM favorites WHERE user_id = $1 AND pokemon_id = $2',
+      [userId, pokemonId]
+    );
+
+    if (existingFavorite.rows.length == 0) {
+      return res.status(400).json({ message: 'You can not remove your like without liking it.' });
+    }
+
+    // Insert the new favorite into the favorites table
+    await pool.query(
+      'DELETE FROM favorites WHERE user_id = $1 AND pokemon_id = $2',
+      [userId, pokemonId]
+    );
+
+    res.status(201).json({ message: 'Favorite Pokémon removed successfully' });
+  } catch (error) {
+    console.error('Error removing favorite Pokémon:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
+module.exports = { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon, removeFavoritePokemon };
