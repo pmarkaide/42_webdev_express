@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PokeDetail } from '../types/type_Pokemon';
@@ -6,7 +6,16 @@ import { typeColors } from '../pokemonTypes';
 import Heart from './Heart';
 
 const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean }> = ({ pokemon, userPageMode = false, isFavorite}) => {
-  const [isFilled, setIsFilled] = useState(isFavorite);
+	const [isFilled, setIsFilled] = useState(isFavorite);
+
+	useEffect(() => {
+    if (userPageMode) {
+      setIsFilled(true);
+    } else {
+      setIsFilled(isFavorite);
+    }
+  }, [userPageMode, isFavorite]);
+
   const getColorClass = (type: keyof typeof typeColors) => {
     return typeColors[type];
 	};
