@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import './global.css';
 import { User } from '@/types/type_User';
 import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps)
 {
@@ -20,7 +21,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps)
 					<Component {...pageProps} user={user} setUser={setUser} />
         </main>
         <Footer />
-      </div>
+				<ToastContainer />
+			</div>
     </SessionProvider>
   );
 }

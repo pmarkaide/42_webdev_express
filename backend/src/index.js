@@ -12,7 +12,7 @@ const { register } = require('./auth/register');
 const { login } = require('./auth/login');
 const { authenticateToken } = require('./auth/authMiddleware');
 
-const { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon, removeFavoritePokemon, editUserInfo } = require('./user/user');
+const { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon, removeFavoritePokemon, editUserInfo, changePassword } = require('./user/user');
 
 app.use(express.json())
 
@@ -104,12 +104,12 @@ app.get('/api/pokemons_with_likes', async (req, res) => {
 
     // Fetch detailed Pokémon data and combine with likes
     const combinedData = await Promise.all(pokemons.map(async (pokemon) => {
-      const detailResponse = await axios.get(pokemon.url); // Fetch details
+      const detailResponse = await axios.get(pokemon.url); // Fetch more details
       const likes = likesMap.get(detailResponse.data.id) || 0; // Get likes count or default to 0
       return { ...detailResponse.data, likes }; // Combine details with likes
     }));
 
-    res.json(combinedData); // Send combined data
+    res.json(combinedData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -128,6 +128,7 @@ app.get('/api/users/:id/favorites', getUserFavorites);
 app.post('/api/users/favorites', addFavoritePokemon);
 app.delete('/api/users/favorites', removeFavoritePokemon);
 app.put('/api/users/:id', editUserInfo);
+app.post('/api/users/change_password', changePassword);
 
 // Check database connection
 pool.connect()

@@ -12,22 +12,21 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({user, setUser}) => {
-  // const [user, setUser] = useState<User | null>(null);
 	const [dropdownVisible, setDropdownVisible] = useState(false);
 
-	useEffect(() => {
-		const userFromLS = localStorage.getItem('user');
-		const token = localStorage.getItem('token');
-		console.log(token)
+	// useEffect(() => {
+	// 	const userFromLS = localStorage.getItem('user');
+	// 	const token = localStorage.getItem('token');
+	// 	console.log(token)
 
-		const parsedUser = userFromLS ? JSON.parse(userFromLS) : null;
+	// 	const parsedUser = JSON.parse(userFromLS);
 
-		if (parsedUser && parsedUser.username) {
-			setUser(parsedUser);
-		} else {
-			setUser(null);
-		}
-	}, []);
+	// 	if (parsedUser && parsedUser.username) {
+	// 		setUser(parsedUser);
+	// 	} else {
+	// 		setUser(null);
+	// 	}
+	// }, []);
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
@@ -61,9 +60,6 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
               pokemon
             </a>
             <a className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900" href="#">
-              dogimon
-            </a>
-            <a className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900" href="#">
               shopping center
 						</a>
 						{/* <p>searach bar Palbo</p> */}
@@ -71,7 +67,8 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
 					<div className="flex items-center justify-end gap-3 relative">
 						{/* <button><Heart isFilled={false} /></button> */}
             {user ? (
-              <div className="relative">
+							<div className="relative flex items-center space-x-2">
+									<h3 className="text-left">{user.username}</h3>
                 <button
                   onClick={toggleDropdown}
                   className="inline-flex items-center justify-center rounded-full h-10 w-10"
@@ -81,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
                     alt="User Avatar"
                     width={38}
                     height={38}
-                    className="h-8 w-8 rounded-full mt-2"
+                    className="h-8 w-8 rounded-full mt-1"
                   />
                 </button>
 								 <Dropdown isOpen={dropdownVisible} onClose={() => setDropdownVisible(false)}>

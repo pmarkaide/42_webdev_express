@@ -7,9 +7,11 @@ import Heart from './Heart';
 import { User } from '@/types/type_User';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import router from 'next/router';
 
 const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean, user: User, onLikesChange?: (pokemonId: string, newLikes: number) => void }> = ({ pokemon, userPageMode = false, isFavorite, user, onLikesChange}) => {
 	const [isFilled, setIsFilled] = useState(isFavorite);
+	const { id } = router.query;
 
 	useEffect(() => {
     if (userPageMode) {
@@ -26,7 +28,16 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
 	const toggleFavorite = async (e: React.MouseEvent) => {
 		e.preventDefault();
 
-		// Toggle the visual state first for a smooth UI experience
+		if (!user)
+		{
+			const userConfirmed = confirm("To like a Pokémon, you will need to log in first.\nWould you like to log in now?");
+			if (userConfirmed) {
+				window.location.href = '/login';
+				return
+			} else {
+				return
+			}
+		}
 		setIsFilled(prev => !prev);
 
 		if (isFilled) {
@@ -42,14 +53,15 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
       onLikesChange(pokemon.id, newLikes);
     }
 
-		// Determine the method based on whether it's already a favorite
 		const method = isFilled ? 'DELETE' : 'POST';
 
 		try {
+			const token = localStorage.getItem('token');
 			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/favorites`, {
 				method: method,
 				headers: {
 					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
 				},
 				body: JSON.stringify({
 					userId: user.user_id,
@@ -72,23 +84,44 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
 				toast.success(`${pokemon.name} is now your favorite.`, {
 					position: 'top-center',
 					autoClose: 2000,
-				});
+			});
 		} catch (error) {
 			console.error('Error toggling favorite:', error);
 			setIsFilled(prev => !prev);
 		}
 	};
+	const loggedUser = localStorage.getItem('user');
 
+	let isUserOwner = false;
+	if (loggedUser) {
+		const parsedUser = JSON.parse(loggedUser);
+		console.log(parsedUser.user_id);
+
+		if (id && !Array.isArray(id)) {
+			isUserOwner = parseInt(id) === parsedUser.user_id;
+		}
+	}
   return (
     <Link href={`/pokemon/${pokemon.id}`} passHref>
 			<div key={pokemon.name} className={`border rounded-lg shadow-lg p-4 bg-white relative ${userPageMode ? 'bg-white' : 'bg-white'} `}>
-				{pokemon.likes === 0 ? null : <span className='absolute top-5 right-11'>{pokemon.likes}</span> }
-        <button
-          onClick={toggleFavorite}
-          className="absolute top-6 right-5 focus:outline-none w-5"
-				>
-          <Heart isFilled={isFilled} />
-        </button>
+				{pokemon.likes === 0 ? null : <span className='absolute top-5 right-11'>{pokemon.likes}</span>}
+				{!isUserOwner ?
+					<button
+						onClick={(e) => {
+							e.preventDefault();  // Prevent the default action
+							alert("This is not your Pokémon!!!");
+						}}
+						className="absolute top-6 right-5 focus:outline-none w-5"
+					>
+						<Heart isFilled={isFilled} />
+					</button>
+					: <button
+						onClick={toggleFavorite}
+						className="absolute top-6 right-5 focus:outline-none w-5"
+					>
+						<Heart isFilled={isFilled} />
+					</button>
+				}
         <div className="flex justify-center items-center">
           <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-blue-700 font-semibold text-lg shadow-md">
             #{pokemon.id}
@@ -103,7 +136,8 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
             height={80}
             priority={true}
 						layout="fixed"
-						// unoptimized
+						//wrote unoptimized to stop complane
+						unoptimized
           />
         </div>
         <h2 className="text-lg font-bold text-center mt-2">{pokemon.name}</h2>
@@ -111,7 +145,6 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
           {pokemon.types.map((typeSlot) => {
             const type = typeSlot.type.name as keyof typeof typeColors;
             const colorClass = getColorClass(type);
-
             return (
               <span
                 key={typeSlot.type.name}

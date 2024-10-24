@@ -11,6 +11,8 @@ import { PokeDetail, Pokemon } from '@/types/type_Pokemon';
 import defaultAvatar from '@/assests/default_avatar.jpg'
 import Card from '@/components/Card';
 import { ToastContainer } from 'react-toastify';
+import { motion } from 'framer-motion'
+import ChangePasswordForm from '@/components/ChangePasswordForm';
 
 interface UserDetailProps
 {
@@ -20,14 +22,9 @@ interface UserDetailProps
 
 const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
 {
-	console.log(user)
   const router = useRouter();
-  // const { data: session } = useSession();
-  // const [user, setUser] = useState<User>();
-  // const [likedPokemons, setLikedPokemons] = useState<Pokemon[]>([]);
-  // const [userInLocalStorage, setUserInLocalStorage] = useState<null | string>(null);
 	const [isEditModalOpen, setEditModalOpen] = useState(false);
-
+	const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 	const [friends, setFriends] = useState<{ id: number; name: string }[]>([]);
 	const [showFriendsList, setShowFriendsList] = useState(false);
 
@@ -38,8 +35,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
       router.push('/login');
 		} else {
 			const user_from_ls = localStorage.getItem('user');
-			console.log(user_from_ls)
-			// setUserInLocalStorage(user_from_ls)
+			setUser(user_from_ls)
 			if (user_from_ls)
 			{
 				const parsedUser = JSON.parse(user_from_ls);
@@ -51,13 +47,16 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
 
 	const fetchUserDetails = async (id: number) =>
 	{
+		const token = localStorage.getItem('token');
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/${id}`, {
+					headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
 			});
 			const data = await response.json();
-			console.log(data)
 			setUser(data);
-			// setLikedPokemons(data.likedPokemons);
 			setFriends(data.friends || []);
 		} catch (error) {
 			console.error('Failed to fetch user data:', error);
@@ -70,14 +69,22 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
 
   const calculateExperienceProgress = () => {
     if (!user) return 0;
-    const { exp, level } = user;
-    const expRequiredForNextLevel = level * 100;
-    return (exp / expRequiredForNextLevel) * 100;
+		const { exp, level } = user;
+		const tempFakeLevel = 1;
+		// const expRequiredForNextLevel = level * 100;
+		const expRequiredForNextLevel = tempFakeLevel * 100;
+		return (exp / expRequiredForNextLevel) * 100;
+
   };
 
   const handleEditProfileClick = () => {
     setEditModalOpen(true);
-  };
+	};
+
+	const toggleChangePasswordClick = () =>
+	{
+		setChangePasswordOpen(prev => !prev);
+	}
 
   const closeEditModal = () => {
     setEditModalOpen(false);
@@ -95,7 +102,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
       </div>
       <div className="flex flex-1">
         <div className="hidden md:block">
-					<Sidebar onEditProfileClick={handleEditProfileClick} onFriendsClick={toggleFriendsList} user={user} />
+					<Sidebar onEditProfileClick={handleEditProfileClick} onChangePassword={toggleChangePasswordClick} onFriendsClick={toggleFriendsList} user={user} />
         </div>
         <main className="flex-1 p-6 bg-white shadow-lg rounded-lg">
           <div className="flex items-center space-x-6 mb-6">
@@ -111,12 +118,6 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{user?.name || user?.username}</h1>
               <p className="text-gray-600">{user?.email}</p>
-              {/* <button
-                onClick={handleEditProfileClick}
-                className="text-blue-500 hover:underline mt-2"
-              >
-                Edit Profile
-              </button> */}
             </div>
           </div>
           <div className="mb-6">
@@ -128,11 +129,11 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
               />
             </div>
             <p className="text-gray-600 text-sm">
-              {user?.exp} / {(user?.level || 0) * 100} EXP
+              {user?.exp} / {(1 || 0) * 100} EXP
             </p>
           </div>
 
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Liked Pokémon</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Favorites Pokémon</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {user?.favorites? (
 							user?.favorites?.map((pokemon: PokeDetail) => (
@@ -149,6 +150,11 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
           onClose={closeEditModal}
           initialData={{ name: user?.username || '', email: user?.email || '', userId: user?.user_id || '' }}
         />
+			)}
+			{changePasswordOpen && (
+				<ChangePasswordForm
+					onClose={toggleChangePasswordClick}
+				/>
 			)}
 			{showFriendsList && <FriendsList friends={friends} onClose={closeFriendList} />}
 			<ToastContainer />

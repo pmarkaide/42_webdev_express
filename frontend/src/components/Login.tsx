@@ -10,7 +10,6 @@ interface LoginProps
 	setUser: (user: User | null) => void;
 }
 
-// const Login: React.FC = () => {
 const Login: React.FC<LoginProps> = ({setUser}) => {
   const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
@@ -18,17 +17,11 @@ const Login: React.FC<LoginProps> = ({setUser}) => {
 
 	const redirect = useRouter();
 
-	// const user_from_ls = localStorage.getItem('user');
-	// console.log(user_from_ls)
-
   const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// const user_from_ls = localStorage.getItem('user');
-		// console.log(user_from_ls)
-
 		try {
-			const response = await fetch('http://localhost:3000/api/login', {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -40,9 +33,6 @@ const Login: React.FC<LoginProps> = ({setUser}) => {
 			}
 			const data = await response.json();
 			localStorage.setItem('token', data.token);
-
-			//temp
-			// console.log("login token: " + data.token)
 			localStorage.setItem('user', JSON.stringify(data.user));
 			toast.success('Login successful!', {
         position: 'top-center',
@@ -66,7 +56,7 @@ return (
 		<div className="flex items-center justify-center min-h-screen bg-gray-100 overflow-hidden">
 			<div className="bg-white p-6 rounded-lg shadow-md w-96">
 				<h2 className="text-2xl font-bold text-center mb-4">Login</h2>
-				<GoogleSignInBtn />
+				<GoogleSignInBtn setUser={setUser} />
 				<form onSubmit={handleLogin}>
 					<div className="mb-4">
 						<label htmlFor="username" className="block text-sm font-medium text-gray-700">

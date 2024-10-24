@@ -39,26 +39,26 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 	const [suggestions, setSuggestions] = useState<PokeDetail[]>([]);
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
-
-		if (!token) {
-			router.push('/login');
-		} else {
-			const user_from_ls = localStorage.getItem('user');
+		// const token = localStorage.getItem('token');
+		const user_from_ls = localStorage.getItem('user');
 			// setUserInLocalStorage(user_from_ls)
-			if (user_from_ls)
-			{
-				const parsedUser = JSON.parse(user_from_ls);
-				fetchUserDetails(parsedUser.user_id);
-				// setUser(parsedUser);
-			}
+		if (user_from_ls)
+		{
+			const parsedUser = JSON.parse(user_from_ls);
+			fetchUserDetails(parsedUser.user_id);
+			console.log(parsedUser)
+			setUser(parsedUser);
 		}
 	}, [router]);
 
 	const fetchUserDetails = async (id: number) =>
 	{
+		const token = localStorage.getItem('token');
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/${id}`, {
+				headers: {
+          Authorization: `Bearer ${token}`, // Include token in the request headers
+        },
 			});
 			const data = await response.json();
 			setUser(data);
@@ -92,19 +92,12 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 		[pokeDetails]
 	);
 
-	//modify this to our own api later
 	useEffect(() => {
 		const fetchPokemons = async () => {
 			try {
 				const response = await fetch(`${apiUrl}/api/pokemons_with_likes`);
 				const data = await response.json();
-				// const pokemonDetails = data.results.map(async (pokemon: Pokemon) => {
-				// 	const detailResponse = await fetch(pokemon.url);
-				// 	return detailResponse.json();
-				// });
-				// const details = await Promise.all(pokemonDetails);
 				const details = await Promise.all(data);
-
 				setPokeDetails(details);
 			} catch (error) {
 				console.error("Error fetching Pokémon data:", error);
@@ -115,6 +108,7 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 		fetchPokemons();
 	}, []);
 
+	//fetch the rest //big amount
 	useEffect(() => {
 	const fetchRemainingPokemons = async () => {
 		setLoadingMore(true); // Set loading state for more Pokémon
@@ -122,18 +116,6 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 			const response = await fetch(`${apiUrl}/api/pokemons_with_likes?offset=${32}&limit=${1025}`);
 			// const response = await fetch('https://pokeapi.co/api/v2/pokemon?offset=32&limit=1025');
 			const data = await response.json();
-			//prev
-			// const pokemonDetails = await Promise.all(
-			// 	data.results.map(async (pokemon: Pokemon) => {
-			// 		const detailResponse = await fetch(pokemon.url);
-			// 		return detailResponse.json();
-			// 	})
-			// );
-			//prev
-			// setPokeDetails(prevDetails => [...prevDetails, ...pokemonDetails]); // Append new Pokémon to existing state
-			//temp_new
-			//consider usememo?
-
 			if (!Array.isArray(data)) {
 				console.error("Expected data to be an array, but got:", data);
 				return;
@@ -150,7 +132,6 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 			setLoadingMore(false);
 		}
 	};
-
     fetchRemainingPokemons();
 	}, [loading]);
 

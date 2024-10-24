@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken'); // Import JWT library
 const { findUserByUsername, findUserByEmail, findFavoritesByUserId, createUser } = require('./userModel');
 
 const register = async (req, res) => {
-	const { username, password, email, auth_method } = req.body;
+	const { username, password, email, auth_method, image } = req.body;
 
-	console.log('register called?')
+	console.log(auth_method)
 
   // Check if the username already exists
   const existingUser = await findUserByUsername(username);
@@ -24,7 +24,7 @@ const register = async (req, res) => {
     hashedPassword = await bcrypt.hash(password, 10); // Hash password only for local users
   }
 
-	const newUser = await createUser(username, email, hashedPassword, auth_method);
+	const newUser = await createUser(username, email, hashedPassword, auth_method, image);
 
 	const { password_hash, ...userWithoutPassword } = newUser;
 

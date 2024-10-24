@@ -17,7 +17,8 @@ const SignUp: React.FC<SignUpProps> = ({setUser}) =>
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: '',
+		password: '',
+		auth_method: 'local'
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +32,7 @@ const SignUp: React.FC<SignUpProps> = ({setUser}) =>
     e.preventDefault();
 
 		try {
-			const response = await fetch('http://localhost:3000/api/register', {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/register`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

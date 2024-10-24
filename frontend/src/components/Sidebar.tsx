@@ -5,25 +5,19 @@ import { User } from '@/types/type_User';
 interface SidebarProps
 {
 	onEditProfileClick: () => void;
+	onChangePassword: () => void;
 	onFriendsClick: () => void;
 	user: User | null;
 	setUser: (user: User | null) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick, user, setUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick, user, setUser, onChangePassword }) => {
   const router = useRouter();
 	// const [user, setUser] = useState<{ name?: string } | {username?: string} | null>(null);
 
   const handleNavigation = (path: string) => {
     router.push(path);
   };
-
-  // useEffect(() => {
-  //   const userString = localStorage.getItem('user');
-  //   if (userString) {
-  //     setUser(JSON.parse(userString)); // Parse the user data
-  //   }
-	// }, []);
 
 	const handleLogout = () => {
     localStorage.removeItem('token');
@@ -41,7 +35,13 @@ const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick, u
           onClick={onEditProfileClick} // Trigger the modal open function
         >
           Edit Profile
-        </li>
+				</li>
+				<li
+          className="mb-6 cursor-pointer hover:text-blue-500"
+          onClick={onChangePassword} // Trigger the modal open function
+        >
+          Change Password
+				</li>
         <li
           className="mb-6 cursor-pointer hover:text-blue-500"
           onClick={onFriendsClick}

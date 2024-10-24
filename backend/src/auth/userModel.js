@@ -55,7 +55,9 @@ const getUserFavorites = async (req, res) => {
 // 	return result.rows[0];
 // };
 
-const createUser = async (username, email, passwordHash, authMethod = 'local', image = null) => {
+const createUser = async (username, email, passwordHash, authMethod = 'local', image = null) =>
+{
+	console.log(passwordHash)
 	const query = `
 		INSERT INTO users (username, email, password_hash, auth_method, image, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING *;
