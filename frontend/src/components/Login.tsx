@@ -18,8 +18,14 @@ const Login: React.FC<LoginProps> = ({setUser}) => {
 
 	const redirect = useRouter();
 
+	// const user_from_ls = localStorage.getItem('user');
+	// console.log(user_from_ls)
+
   const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		// const user_from_ls = localStorage.getItem('user');
+		// console.log(user_from_ls)
 
 		try {
 			const response = await fetch('http://localhost:3000/api/login', {
@@ -36,7 +42,7 @@ const Login: React.FC<LoginProps> = ({setUser}) => {
 			localStorage.setItem('token', data.token);
 
 			//temp
-			console.log("login token: " + data.token)
+			// console.log("login token: " + data.token)
 			localStorage.setItem('user', JSON.stringify(data.user));
 			toast.success('Login successful!', {
         position: 'top-center',

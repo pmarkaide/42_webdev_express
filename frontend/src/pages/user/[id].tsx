@@ -20,8 +20,12 @@ interface UserDetailProps
 
 const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
 {
+
 	console.log(user)
   const router = useRouter();
+	const { id } = router.query;
+
+	console.log(id)
   // const { data: session } = useSession();
   // const [user, setUser] = useState<User>();
   // const [likedPokemons, setLikedPokemons] = useState<Pokemon[]>([]);
@@ -32,24 +36,10 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
 	const [showFriendsList, setShowFriendsList] = useState(false);
 
   useEffect(() => {
-		const token = localStorage.getItem('token');
-
-    if (!token) {
-      router.push('/login');
-		} else {
-			const user_from_ls = localStorage.getItem('user');
-			console.log(user_from_ls)
-			// setUserInLocalStorage(user_from_ls)
-			if (user_from_ls)
-			{
-				const parsedUser = JSON.parse(user_from_ls);
-				fetchUserDetails(parsedUser.user_id);
-				// setUser(parsedUser);
-			}
-    }
+		fetchUserDetails(id);
 	}, [router]);
 
-	const fetchUserDetails = async (id: number) =>
+	const fetchUserDetails = async (id: number | string | string[] | undefined) =>
 	{
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/${id}`, {
@@ -94,9 +84,9 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
 				<Topbar onFriendsClick={toggleFriendsList} user={user} />
       </div>
       <div className="flex flex-1">
-        <div className="hidden md:block">
+        {/* <div className="hidden md:block">
 					<Sidebar onEditProfileClick={handleEditProfileClick} onFriendsClick={toggleFriendsList} user={user} />
-        </div>
+        </div> */}
         <main className="flex-1 p-6 bg-white shadow-lg rounded-lg">
           <div className="flex items-center space-x-6 mb-6">
             <div className="relative w-24 h-24">
@@ -108,15 +98,17 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
                 objectFit="cover"
               />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{user?.name || user?.username}</h1>
-              <p className="text-gray-600">{user?.email}</p>
-              {/* <button
-                onClick={handleEditProfileClick}
-                className="text-blue-500 hover:underline mt-2"
+						<div className='flex justify-between items-center'>
+							<div>
+								<h1 className="text-2xl font-bold text-gray-900">{user?.name || user?.username}</h1>
+								<p className="text-gray-600">{user?.email}</p>
+							</div>
+              <button
+                onClick={() => console.log("add friend")}
+  							className="text-blue-500 hover:bg-blue-500 hover:text-white mt-2 ml-5 border border-blue-500 rounded-md px-4 py-2"
               >
-                Edit Profile
-              </button> */}
+                Add friend
+              </button>
             </div>
           </div>
           <div className="mb-6">
