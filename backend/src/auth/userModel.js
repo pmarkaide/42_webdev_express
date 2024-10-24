@@ -45,12 +45,22 @@ const getUserFavorites = async (req, res) => {
   }
 };
 
-const createUser = async (username, email, passwordHash) => {
+// const createUser = async (username, email, passwordHash) => {
+// 	const query = `
+// 		INSERT INTO users (username, email, password_hash, created_at, updated_at)
+// 		VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *;
+// 	`;
+// 	const values = [username, email, passwordHash];
+// 	const result = await pool.query(query, values);
+// 	return result.rows[0];
+// };
+
+const createUser = async (username, email, passwordHash, authMethod = 'local', image = null) => {
 	const query = `
-		INSERT INTO users (username, email, password_hash, created_at, updated_at)
-		VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *;
+		INSERT INTO users (username, email, password_hash, auth_method, image, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING *;
 	`;
-	const values = [username, email, passwordHash];
+	const values = [username, email, passwordHash, authMethod, image];
 	const result = await pool.query(query, values);
 	return result.rows[0];
 };
