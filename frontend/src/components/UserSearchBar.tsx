@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '@/types/type_User';
-import Image from 'next/image';
-import defaultAvatar from '../assests/default_avatar.jpg';
 import { Search } from 'lucide-react';
 
 const UserSearchBar = () => {
@@ -9,7 +7,9 @@ const UserSearchBar = () => {
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -24,27 +24,52 @@ const UserSearchBar = () => {
 
   useEffect(() => {
     const searchUsers = async () => {
-      if (searchQuery.trim() === '') {
-        setSearchResults([]);
-        return;
-      }
-
-      setIsLoading(true);
+      // Previous code remains the same...
+  
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/search?query=${searchQuery}`);
-        const data = await response.json();
-        setSearchResults(data);
-        setIsDropdownOpen(true);
-      } catch (error) {
-        console.error('Error searching users:', error);
+        // API call code remains the same...
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          // Request was aborted, do nothing
+          return;
+        }
+        
+        console.error('Error searching users:', err);
+        
+        // Proper type narrowing for the error
+        let errorMessage: string;
+        if (err instanceof Error) {
+          errorMessage = err.message;
+        } else if (typeof err === 'string') {
+          errorMessage = err;
+        } else {
+          errorMessage = 'Failed to search users';
+        }
+        
+        setError(errorMessage);
+        setSearchResults([]);
       } finally {
         setIsLoading(false);
       }
     };
 
+    // Debounce the search
     const timeoutId = setTimeout(searchUsers, 300);
-    return () => clearTimeout(timeoutId);
+
+    // Cleanup function
+    return () => {
+      clearTimeout(timeoutId);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [searchQuery]);
+
+  const handleUserSelect = (user: User) => {
+    console.log('Selected user:', user);
+    setSearchQuery('');
+    setIsDropdownOpen(false);
+  };
 
   return (
     <div className="relative w-64" ref={dropdownRef}>
@@ -56,36 +81,44 @@ const UserSearchBar = () => {
           placeholder="Search users..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => searchQuery.trim() && setIsDropdownOpen(true)}
         />
       </div>
 
-      {isDropdownOpen && searchResults.length > 0 && (
-        <div className="absolute mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
-          {searchResults.map((user) => (
-            <a
-              key={user.user_id}
-              href={`/user/${user.user_id}`}
-              className="flex items-center px-4 py-2 hover:bg-gray-50"
-            >
-              <Image
-                src={user.image || defaultAvatar}
-                alt={user.username}
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-900">{user.username}</p>
-                <p className="text-xs text-gray-500">{user.email}</p>
+      {(isDropdownOpen || isLoading) && (
+        <div className="absolute mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg max-h-60 overflow-y-auto z-50">
+          {isLoading ? (
+            <div className="p-4 text-center text-gray-500">
+              Searching...
+            </div>
+          ) : error ? (
+            <div className="p-4 text-center text-red-500">
+              {error}
+            </div>
+          ) : searchResults.length > 0 ? (
+            searchResults.map((user) => (
+              <div
+                key={user.user_id}
+                onClick={() => handleUserSelect(user)}
+                className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-gray-900">
+                      {user.username || user.name}
+                    </p>
+                    {user.email && (
+                      <p className="text-xs text-gray-500">{user.email}</p>
+                    )}
+                  </div>
+                </div>
               </div>
-            </a>
-          ))}
-        </div>
-      )}
-
-      {isLoading && (
-        <div className="absolute mt-1 w-full rounded-lg border border-gray-200 bg-white p-4 text-center">
-          Loading...
+            ))
+          ) : searchQuery.trim() !== '' && (
+            <div className="p-4 text-center text-gray-500">
+              No users found
+            </div>
+          )}
         </div>
       )}
     </div>

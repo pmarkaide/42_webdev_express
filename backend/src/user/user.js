@@ -127,7 +127,7 @@ const addFavoritePokemon = async (req, res) => {
   } catch (error) {
     console.error('Error adding favorite Pokémon:', error);
     res.status(500).json({ error: 'Internal server error' });
-  }
+  }getUserById
 };
 
 const removeFavoritePokemon = async (req, res) => {
@@ -143,7 +143,7 @@ const removeFavoritePokemon = async (req, res) => {
       return res.status(400).json({ message: 'You can not remove your like without liking it.' });
     }
 
-    // Insert the new favorite into the favorites table
+    // Insert the new favoritgetUserByIde into the favorites table
     await pool.query(
       'DELETE FROM favorites WHERE user_id = $1 AND pokemon_id = $2',
       [userId, pokemonId]
@@ -197,18 +197,39 @@ const searchUsers = async (req, res) => {
     return res.status(400).json({ message: 'Search query is required' });
   }
 
+  let client;
   try {
-    const result = await pool.query(`
-      SELECT user_id, username, email, image
+    // Get a client from the pool
+    client = await pool.connect();
+
+    const result = await client.query(`
+      SELECT user_id, username, email
       FROM users
-      WHERE username ILIKE $1 OR email ILIKE $1
+      WHERE username ILIKE $1
       LIMIT 5
     `, [`%${query}%`]);
 
+    console.log('Search query:', query);
+    console.log('Query result:', result.rows);
+
+    // Send response before releasing client
     res.json(result.rows);
   } catch (error) {
     console.error('Error searching users:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    // Send a more specific error message
+    res.status(500).json({ 
+      error: 'Database error while searching users',
+      details: error.message 
+    });
+  } finally {
+    // Release the client back to the pool
+    if (client) {
+      try {
+        client.release();
+      } catch (err) {
+        console.error('Error releasing client:', err);
+      }
+    }
   }
 };
 
