@@ -1,13 +1,10 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken'); // Import JWT library
+const jwt = require('jsonwebtoken');
 const { findUserByUsername, findUserByEmail, findFavoritesByUserId, createUser } = require('./userModel');
 
 const register = async (req, res) => {
 	const { username, password, email, auth_method, image } = req.body;
 
-	console.log(auth_method)
-
-  // Check if the username already exists
   const existingUser = await findUserByUsername(username);
   if (existingUser) {
     return res.status(400).json({ message: 'Username already taken' });
@@ -18,8 +15,7 @@ const register = async (req, res) => {
     return res.status(400).json({ message: 'Email already taken' });
   }
 
-	// const hashedPassword = await bcrypt.hash(password, 10);
-	let hashedPassword = null; // Initialize password hash as null
+	let hashedPassword = null; // init
   if (auth_method === 'local') {
     hashedPassword = await bcrypt.hash(password, 10); // Hash password only for local users
   }

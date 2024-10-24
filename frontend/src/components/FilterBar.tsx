@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import SearchBar from './SearchBar';
 import { PokeDetail } from '@/types/type_Pokemon';
-import { FaArrowDownWideShort } from "react-icons/fa6";
 
 interface FilterBarProps {
   types: string[];

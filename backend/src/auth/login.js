@@ -5,7 +5,6 @@ const { findUserByUsername } = require('./userModel');
 const login = async (req, res) => {
 	const { username, password, auth_method } = req.body;
 
-  // Find the user by username
 	const user = await findUserByUsername(username);
   if (!user) {
     return res.status(401).json({ message: 'Invalid username or password' });
@@ -13,13 +12,11 @@ const login = async (req, res) => {
 
 	if (auth_method === 'local')
 	{
-		console.log('hi')
 		const isMatch = await bcrypt.compare(password, user.password_hash);
 		if (!isMatch)
 		{
 			return res.status(401).json({ message: 'Invalid username or password' });
 		}
-		console.log('match')
 	}
 
 	const { password_hash, ...userWithoutPassword } = user;
