@@ -190,6 +190,29 @@ const editUserInfo = async (req, res) => {
   }
 };
 
+const searchUsers = async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ message: 'Search query is required' });
+  }
+
+  try {
+    const result = await pool.query(`
+      SELECT user_id, username, email, image
+      FROM users
+      WHERE username ILIKE $1 OR email ILIKE $1
+      LIMIT 5
+    `, [`%${query}%`]);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error searching users:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+router.get('/search', searchUsers);
 router.get('/', getAllUsers);
 router.get('/:id', authenticateToken, getUserById);
 router.get('/:id/favorites', getUserFavorites);

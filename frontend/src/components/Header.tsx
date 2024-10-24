@@ -5,6 +5,7 @@ import defaultAvatar from '../assests/default_avatar.jpg'
 import { User } from '@/types/type_User';
 import Dropdown from './Dropdown';
 // import Heart from './Heart';
+import UserSearchBar from './UserSearchBar';
 
 interface HeaderProps {
   user: User | null;
@@ -53,19 +54,20 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
             </a>
           </div>
           <div className="hidden md:flex md:items-center md:justify-center md:gap-5">
-            <a
-              aria-current="page"
-              className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900"
-              href="#"
+          <UserSearchBar />  {/* Add this line */}
+          {/* <a
+          aria-current="page"
+          className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900"
+          href="#"
             >
-              pokemon
-            </a>
+          pokemon
+        </a>
             <a className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900" href="#">
               dogimon
             </a>
             <a className="inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-900 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900" href="#">
               shopping center
-						</a>
+						</a> */}
 						{/* <p>searach bar Palbo</p> */}
           </div>
 					<div className="flex items-center justify-end gap-3 relative">
