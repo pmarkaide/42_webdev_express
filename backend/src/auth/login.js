@@ -5,8 +5,6 @@ const { findUserByUsername } = require('./userModel');
 const login = async (req, res) => {
 	const { username, password } = req.body;
 
-	console.log(username)
-
   // Find the user by username
 	const user = await findUserByUsername(username);
   if (!user) {
@@ -21,7 +19,7 @@ const login = async (req, res) => {
 
 	const { password_hash, ...userWithoutPassword } = user;
 
-	const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '15min' });
+	const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '2h' });
 
 	// const favoritePokemons = await findFavoritesByUserId(user.id);
 

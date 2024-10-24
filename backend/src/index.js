@@ -12,7 +12,7 @@ const { register } = require('./auth/register');
 const { login } = require('./auth/login');
 const { authenticateToken } = require('./auth/authMiddleware');
 
-const { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon, removeFavoritePokemon } = require('./user/user');
+const { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon, removeFavoritePokemon, editUserInfo } = require('./user/user');
 
 app.use(express.json())
 
@@ -127,6 +127,7 @@ app.get('/api/users/:id', getUserById);
 app.get('/api/users/:id/favorites', getUserFavorites);
 app.post('/api/users/favorites', addFavoritePokemon);
 app.delete('/api/users/favorites', removeFavoritePokemon);
+app.put('/api/users/:id', editUserInfo);
 
 // Check database connection
 pool.connect()

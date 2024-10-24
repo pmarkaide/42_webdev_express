@@ -7,11 +7,24 @@
 # }
 
 
-POST http://localhost:3000/api/register
+# POST http://localhost:3000/api/register
+# Content-Type: application/json
+
+# {
+#   "username": "rich",
+#   "password": "yourPassword",
+# 	"email": "123@gmail.com"
+# }
+
+
+PUT http://localhost:3000/api/users/4
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTcyOTcwMDUwNywiZXhwIjoxNzI5NzAxNDA3fQ.XjfJxuhmAw-WMAPHyzl_kn_sQrXPzOS99Y08rk_cxHw
 
 {
-  "username": "rich",
+  "username": "rich is a god",
   "password": "yourPassword",
 	"email": "123@gmail.com"
 }
+
+

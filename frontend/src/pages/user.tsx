@@ -10,6 +10,7 @@ import FriendsList from '@/components/FriendsList';
 import { PokeDetail, Pokemon } from '@/types/type_Pokemon';
 import defaultAvatar from '@/assests/default_avatar.jpg'
 import Card from '@/components/Card';
+import { ToastContainer } from 'react-toastify';
 
 interface UserDetailProps
 {
@@ -48,10 +49,6 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
     }
 	}, [router]);
 
-	// useEffect(() => {
-  //   console.log(user); // This will show the updated user
-  // }, [user]); // Dependency array to trigger when `user` changes
-
 	const fetchUserDetails = async (id: number) =>
 	{
 		console.log(id)
@@ -72,7 +69,6 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
     setShowFriendsList(prev => !prev);
   };
 
-  // Calculate experience progress
   const calculateExperienceProgress = () => {
     if (!user) return 0;
     const { exp, level } = user;
@@ -80,12 +76,10 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
     return (exp / expRequiredForNextLevel) * 100;
   };
 
-  // Function to open the edit modal
   const handleEditProfileClick = () => {
     setEditModalOpen(true);
   };
 
-  // Function to close the edit modal
   const closeEditModal = () => {
     setEditModalOpen(false);
 	};
@@ -146,22 +140,6 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
             {user?.favorites? (
 							user?.favorites?.map((pokemon: PokeDetail) => (
 								<Card key={pokemon.name} pokemon={pokemon} userPageMode={true} user={user} isFavorite={false} />
-
-                // <div
-                //   key={pokemon.id}
-                //   className="p-4 bg-gray-100 rounded-lg flex flex-col items-center shadow-md"
-								// >
-								// 	<p>yo</p>
-                //   <Image
-                //     className="mb-2"
-                //     src={pokemon.sprites.other.showdown.front_default}
-                //     alt={pokemon.name}
-                //     width={80}
-                //     height={80}
-                //     objectFit="contain"
-                //   />
-                //   <span className="text-lg font-semibold text-gray-800">{pokemon.name}</span>
-                // </div>
               ))
             ) : (
               <p className="text-gray-600">No liked Pokémon yet.</p>
@@ -172,10 +150,11 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
       {isEditModalOpen && (
         <EditProfileForm
           onClose={closeEditModal}
-          initialData={{ name: user?.name || '', email: user?.email || '' }}
+          initialData={{ name: user?.username || '', email: user?.email || '', userId: user?.user_id || '' }}
         />
 			)}
 			{showFriendsList && <FriendsList friends={friends} onClose={closeFriendList} />}
+			<ToastContainer />
     </div>
   );
 };

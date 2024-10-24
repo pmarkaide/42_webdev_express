@@ -9,7 +9,6 @@ import debounce from 'lodash/debounce';
 import {User} from '@/types/type_User';
 import { useRouter } from 'next/router';
 import { CgPokemon } from 'react-icons/cg';
-
 import { ToastContainer } from 'react-toastify';
 
 const apiUrl = process.env.NEXT_PUBLIC_MY_BACKEND_API_URL;
@@ -46,7 +45,6 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 			router.push('/login');
 		} else {
 			const user_from_ls = localStorage.getItem('user');
-			console.log(user_from_ls)
 			// setUserInLocalStorage(user_from_ls)
 			if (user_from_ls)
 			{
@@ -59,7 +57,6 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 
 	const fetchUserDetails = async (id: number) =>
 	{
-		console.log(id)
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/${id}`, {
 			});
@@ -94,8 +91,6 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 		}, 300),
 		[pokeDetails]
 	);
-
-	console.log(user)
 
 	//modify this to our own api later
 	useEffect(() => {
@@ -141,7 +136,7 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 
 			if (!Array.isArray(data)) {
 				console.error("Expected data to be an array, but got:", data);
-				return; // Exit if the data is not an array
+				return;
 			}
 			setPokeDetails(prevDetails => {
 				const existingNames = new Set(prevDetails.map(p => p.name)); // Set of existing Pokémon names
@@ -174,12 +169,43 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 		)
 		: pokeDetails;
 
-	const sortedPokemons = filteredPokemons.sort((a, b) => {
+	// const sortedPokemons = filteredPokemons.sort((a, b) => {
+	// 	if (sortBy === 'id') {
+	// 		return parseInt(a.id) - parseInt(b.id);
+	// 	}
+	// 		return a.name.localeCompare(b.name);
+	// });
+
+	const sortedPokemons = filteredPokemons.sort((a, b) =>
+	{
+		console.log(sortBy)
 		if (sortBy === 'id') {
 			return parseInt(a.id) - parseInt(b.id);
-		}
+		} else if (sortBy === 'reverse-id')
+		{
+			return parseInt(b.id) - parseInt(a.id);
+		} else if (sortBy === 'name')
+		{
 			return a.name.localeCompare(b.name);
+		} else if (sortBy === 'reverse-name')
+		{
+			return b.name.localeCompare(a.name);
+		} else if (sortBy === 'likes')
+		{
+			return a.likes - b.likes
+		} else if (sortBy === 'reverse-likes')
+		{
+			return b.likes - a.likes
+		}
+			return parseInt(a.id) - parseInt(b.id);
 	});
+
+	// const sortedPokemons = filteredPokemons.sort((a, b) => {
+	// 	if (sortBy === 'id') {
+	// 		return parseInt(a.id) - parseInt(b.id);
+	// 	}
+	// 		return a.name.localeCompare(b.name);
+	// });
 
 	//page calculations
 	const indexOfLastPokemon = currentPage * itemsPerPage;

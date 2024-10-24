@@ -1,20 +1,44 @@
 // components/EditProfileForm.tsx
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 interface EditProfileFormProps {
   onClose: () => void;
-  initialData: { name: string; email: string };
+  initialData: { name: string; email: string, userId: string };
 }
 
-const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose, initialData }) => {
+const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose, initialData }) =>
+{
   const [name, setName] = useState(initialData.name);
-  const [email, setEmail] = useState(initialData.email);
+	const [email, setEmail] = useState(initialData.email);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission logic here (e.g., update user profile)
-    console.log('Updated profile:', { name, email });
-    onClose();
+	const id = initialData.userId;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_MY_BACKEND_API_URL}/api/users/:id`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${localStorage.getItem('token')}`,
+				},
+				body: JSON.stringify({ name, email, id }),
+			})
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Update failed');
+			}
+			toast.success(`Update successful`, {
+				position: 'top-center',
+				autoClose: 2000,
+			});
+			onClose();
+		} catch (error) {
+			console.error(error)
+			console.log(error)
+		}
 	};
 
 	const handleKeyDown = (event: KeyboardEvent) => {
@@ -40,7 +64,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose, initialData 
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={handleClickOutside}>
-      <div className="bg-white p-6 rounded-lg shadow-md w-8/12">
+      <div className="bg-white p-6 rounded-lg shadow-md w-8/12 modal-content">
         <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

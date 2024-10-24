@@ -8,10 +8,8 @@ import { User } from '@/types/type_User';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean, user: User, onLikesChange: (pokemonId: string, newLikes: number) => void }> = ({ pokemon, userPageMode = false, isFavorite, user, onLikesChange}) => {
+const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean, user: User, onLikesChange?: (pokemonId: string, newLikes: number) => void }> = ({ pokemon, userPageMode = false, isFavorite, user, onLikesChange}) => {
 	const [isFilled, setIsFilled] = useState(isFavorite);
-
-	console.log(user)
 
 	useEffect(() => {
     if (userPageMode) {
@@ -40,7 +38,9 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
 		}
 		const newLikes = !isFilled ? pokemon.likes + 1 : pokemon.likes - 1;
 
-		onLikesChange(pokemon.id, newLikes);
+		if (onLikesChange) {
+      onLikesChange(pokemon.id, newLikes);
+    }
 
 		// Determine the method based on whether it's already a favorite
 		const method = isFilled ? 'DELETE' : 'POST';

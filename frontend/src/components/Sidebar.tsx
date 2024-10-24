@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { User } from 'next-auth';
 
 interface SidebarProps
 {
@@ -49,7 +48,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick })
 				</li>
 				<li
           className="mb-6 cursor-pointer hover:text-blue-500"
-          // onClick={console.log("hi")}
         >
           bag
         </li>

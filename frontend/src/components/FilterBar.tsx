@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import SearchBar from './SearchBar';
 import { PokeDetail } from '@/types/type_Pokemon';
+import { FaArrowDownWideShort } from "react-icons/fa6";
 
 interface FilterBarProps {
   types: string[];
@@ -58,8 +59,12 @@ const FilterBar: React.FC<FilterBarProps> = ({ types, onTypeChange, onSortChange
           onChange={handleSortChange}
           className="block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 h-12"
         >
-          <option value="id">ID</option>
-          <option value="name">Name</option>
+					<option value="id">ID</option>
+					<option value="reverse-id">ID descending</option>
+					<option value="name">Name</option>
+					<option value="reverse-name">Name descending</option>
+					<option value="likes">Likes</option>
+					<option value="reverse-likes">Likes descending</option>
         </select>
       </div>
     </div>

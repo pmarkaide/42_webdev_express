@@ -34,6 +34,9 @@ const Login: React.FC<LoginProps> = ({setUser}) => {
 			}
 			const data = await response.json();
 			localStorage.setItem('token', data.token);
+
+			//temp
+			console.log("login token: " + data.token)
 			localStorage.setItem('user', JSON.stringify(data.user));
 			toast.success('Login successful!', {
         position: 'top-center',

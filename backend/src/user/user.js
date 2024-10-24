@@ -1,4 +1,5 @@
 const pool = require('../db');
+const jwt = require('jsonwebtoken');
 
 const getAllUsers = async (req, res) => {
   try {
@@ -107,22 +108,18 @@ const addFavoritePokemon = async (req, res) => {
 	const { userId, pokemonId } = req.body;
 
   try {
-    // Check if the user already has this Pokémon as a favorite
     const existingFavorite = await pool.query(
       'SELECT * FROM favorites WHERE user_id = $1 AND pokemon_id = $2',
       [userId, pokemonId]
     );
-
     if (existingFavorite.rows.length > 0) {
       return res.status(400).json({ message: 'This Pokémon is already in your favorites' });
     }
 
-    // Insert the new favorite into the favorites table
     await pool.query(
       'INSERT INTO favorites (user_id, pokemon_id) VALUES ($1, $2)',
       [userId, pokemonId]
     );
-
     res.status(201).json({ message: 'Favorite Pokémon added successfully' });
   } catch (error) {
     console.error('Error adding favorite Pokémon:', error);
@@ -156,6 +153,38 @@ const removeFavoritePokemon = async (req, res) => {
   }
 };
 
+const editUserInfo = async (req, res) => {
+  // const { id } = req.params;
+  const { id, name, email } = req.body;
 
+	const token = req.headers.authorization?.split(' ')[1];
+	console.log(token)
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
 
-module.exports = { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon, removeFavoritePokemon };
+  try {
+		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+		console.log('parint: ' + parseInt(id))
+
+    // Check if the user ID from token matches the ID in the URL
+    if ((decoded.userId) !== parseInt(id)) {
+      return res.status(403).json({ message: 'You are not authorized to edit this user' });
+    }
+    const result = await pool.query(
+      'UPDATE users SET username = $1, email = $2 WHERE user_id = $3 RETURNING *',
+      [name, email, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User information updated successfully', user: result.rows[0] });
+  } catch (error) {
+    console.error('Error updating user info:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+module.exports = { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon, removeFavoritePokemon, editUserInfo };
