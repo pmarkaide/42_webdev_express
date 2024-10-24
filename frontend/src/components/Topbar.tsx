@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { useSession } from "next-auth/react";
 import EditProfileForm from '@/components/EditProfileForm';
+import { User } from '@/types/type_User';
 
 interface TopbarProps {
-  onFriendsClick: () => void;
+	onFriendsClick: () => void;
+	user: User;
+	setUser: (user: User | null) => void;
 }
 
-const Topbar: React.FC<TopbarProps> = ({ onFriendsClick }) => {
+const Topbar: React.FC<TopbarProps> = ({ onFriendsClick, user, setUser }) =>
+{
+
+	//temp
+	console.log(user)
   const { data: session } = useSession();
   const [isEditModalOpen, setEditModalOpen] = useState(false);
 

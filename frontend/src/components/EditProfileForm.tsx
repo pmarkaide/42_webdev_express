@@ -30,7 +30,9 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose, initialData 
 				const errorData = await response.json();
 				throw new Error(errorData.message || 'Update failed');
 			}
-			toast.success(`Update successful`, {
+			const data = await response.json();
+    	console.log(data);
+			toast.success(`${data.message}`, {
 				position: 'top-center',
 				autoClose: 2000,
 			});

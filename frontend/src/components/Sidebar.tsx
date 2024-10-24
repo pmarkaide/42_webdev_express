@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { User } from '@/types/type_User';
 
 interface SidebarProps
 {
-	// user: User | null;
 	onEditProfileClick: () => void;
 	onFriendsClick: () => void;
+	user: User | null;
+	setUser: (user: User | null) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick }) => {
+const Sidebar: React.FC<SidebarProps> = ({ onEditProfileClick, onFriendsClick, user, setUser }) => {
   const router = useRouter();
-	const [user, setUser] = useState<{ name?: string } | {username?: string} | null>(null);
+	// const [user, setUser] = useState<{ name?: string } | {username?: string} | null>(null);
 
   const handleNavigation = (path: string) => {
     router.push(path);
   };
 
-  useEffect(() => {
-    const userString = localStorage.getItem('user');
-    if (userString) {
-      setUser(JSON.parse(userString)); // Parse the user data
-    }
-	}, []);
+  // useEffect(() => {
+  //   const userString = localStorage.getItem('user');
+  //   if (userString) {
+  //     setUser(JSON.parse(userString)); // Parse the user data
+  //   }
+	// }, []);
 
 	const handleLogout = () => {
     localStorage.removeItem('token');

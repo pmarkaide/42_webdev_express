@@ -94,11 +94,11 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
   return (
 		<div className="flex flex-col mt-36 w-10/12 mx-auto">
       <div className="md:hidden">
-        <Topbar onFriendsClick={toggleFriendsList}/>
+				<Topbar onFriendsClick={toggleFriendsList} user={user} />
       </div>
       <div className="flex flex-1">
         <div className="hidden md:block">
-					<Sidebar onEditProfileClick={handleEditProfileClick} onFriendsClick={toggleFriendsList} />
+					<Sidebar onEditProfileClick={handleEditProfileClick} onFriendsClick={toggleFriendsList} user={user} />
         </div>
         <main className="flex-1 p-6 bg-white shadow-lg rounded-lg">
           <div className="flex items-center space-x-6 mb-6">

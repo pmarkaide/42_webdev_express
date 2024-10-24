@@ -169,16 +169,8 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 		)
 		: pokeDetails;
 
-	// const sortedPokemons = filteredPokemons.sort((a, b) => {
-	// 	if (sortBy === 'id') {
-	// 		return parseInt(a.id) - parseInt(b.id);
-	// 	}
-	// 		return a.name.localeCompare(b.name);
-	// });
-
 	const sortedPokemons = filteredPokemons.sort((a, b) =>
 	{
-		console.log(sortBy)
 		if (sortBy === 'id') {
 			return parseInt(a.id) - parseInt(b.id);
 		} else if (sortBy === 'reverse-id')
@@ -199,13 +191,6 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 		}
 			return parseInt(a.id) - parseInt(b.id);
 	});
-
-	// const sortedPokemons = filteredPokemons.sort((a, b) => {
-	// 	if (sortBy === 'id') {
-	// 		return parseInt(a.id) - parseInt(b.id);
-	// 	}
-	// 		return a.name.localeCompare(b.name);
-	// });
 
 	//page calculations
 	const indexOfLastPokemon = currentPage * itemsPerPage;

@@ -139,8 +139,6 @@ const removeFavoritePokemon = async (req, res) => {
     if (existingFavorite.rows.length == 0) {
       return res.status(400).json({ message: 'You can not remove your like without liking it.' });
     }
-
-    // Insert the new favorite into the favorites table
     await pool.query(
       'DELETE FROM favorites WHERE user_id = $1 AND pokemon_id = $2',
       [userId, pokemonId]
@@ -154,7 +152,6 @@ const removeFavoritePokemon = async (req, res) => {
 };
 
 const editUserInfo = async (req, res) => {
-  // const { id } = req.params;
   const { id, name, email } = req.body;
 
 	const token = req.headers.authorization?.split(' ')[1];
@@ -166,9 +163,6 @@ const editUserInfo = async (req, res) => {
   try {
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-		console.log('parint: ' + parseInt(id))
-
-    // Check if the user ID from token matches the ID in the URL
     if ((decoded.userId) !== parseInt(id)) {
       return res.status(403).json({ message: 'You are not authorized to edit this user' });
     }
@@ -179,7 +173,6 @@ const editUserInfo = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
-
     res.json({ message: 'User information updated successfully', user: result.rows[0] });
   } catch (error) {
     console.error('Error updating user info:', error);
