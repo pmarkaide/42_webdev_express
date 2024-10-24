@@ -11,6 +11,7 @@ import { PokeDetail, Pokemon } from '@/types/type_Pokemon';
 import defaultAvatar from '@/assests/default_avatar.jpg'
 import Card from '@/components/Card';
 import { ToastContainer } from 'react-toastify';
+import Link from 'next/link';
 
 interface UserDetailProps
 {
@@ -122,6 +123,9 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
               </button> */}
             </div>
           </div>
+          <Link href={`/user/${user?.user_id}`}>
+            <a className="text-blue-500 hover:underline mt-2">View Profile</a>
+          </Link>
           <div className="mb-6">
             <p className="text-gray-600">Level: {user?.level}</p>
             <div className="relative h-4 bg-gray-300 rounded-full">

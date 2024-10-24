@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const pool = require('./db');
+const userRouter = require('./user/user');
+app.use('/api/users', userRouter);
 
 //This will allow you make the api call in frontend
 const cors = require('cors');
@@ -122,12 +124,12 @@ app.get('/api/protected', authenticateToken, (req, res) => {
   res.json({ message: 'This is a protected route.', user: req.user });
 });
 
-app.get('/api/users', getAllUsers);
-app.get('/api/users/:id', getUserById);
-app.get('/api/users/:id/favorites', getUserFavorites);
-app.post('/api/users/favorites', addFavoritePokemon);
-app.delete('/api/users/favorites', removeFavoritePokemon);
-app.put('/api/users/:id', editUserInfo);
+// app.get('/api/users', getAllUsers);
+// app.get('/api/users/:id', getUserById);
+// app.get('/api/users/:id/favorites', getUserFavorites);
+// app.post('/api/users/favorites', addFavoritePokemon);
+// app.delete('/api/users/favorites', removeFavoritePokemon);
+// app.put('/api/users/:id', editUserInfo);
 
 // Check database connection
 pool.connect()

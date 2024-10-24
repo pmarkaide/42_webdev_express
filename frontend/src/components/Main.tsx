@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { CgPokemon } from 'react-icons/cg';
 import { ToastContainer } from 'react-toastify';
 
+
 const apiUrl = process.env.NEXT_PUBLIC_MY_BACKEND_API_URL;
 
 interface MainProps {
@@ -41,9 +42,9 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 	useEffect(() => {
 		const token = localStorage.getItem('token');
 
-		if (!token) {
-			router.push('/login');
-		} else {
+		// if (!token) {
+		// 	router.push('/login');
+		// } else {
 			const user_from_ls = localStorage.getItem('user');
 			// setUserInLocalStorage(user_from_ls)
 			if (user_from_ls)
@@ -52,7 +53,7 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 				fetchUserDetails(parsedUser.user_id);
 				// setUser(parsedUser);
 			}
-		}
+		//}
 	}, [router]);
 
 	const fetchUserDetails = async (id: number) =>

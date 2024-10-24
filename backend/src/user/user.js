@@ -1,5 +1,8 @@
 const pool = require('../db');
 const jwt = require('jsonwebtoken');
+const express = require('express');
+const router = express.Router();
+const { authenticateToken } = require('../auth/authMiddleware');
 
 const getAllUsers = async (req, res) => {
   try {
@@ -187,4 +190,10 @@ const editUserInfo = async (req, res) => {
   }
 };
 
-module.exports = { getUserById, getAllUsers, getUserFavorites, addFavoritePokemon, removeFavoritePokemon, editUserInfo };
+router.get('/', getAllUsers);
+router.get('/:id', authenticateToken, getUserById);
+router.get('/:id/favorites', getUserFavorites);
+router.post('/favorites', addFavoritePokemon);
+router.delete('/favorites', removeFavoritePokemon);
+router.put('/:id', authenticateToken, editUserInfo);
+module.exports = router;
