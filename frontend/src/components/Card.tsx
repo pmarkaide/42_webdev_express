@@ -11,7 +11,11 @@ import router from 'next/router';
 
 const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean, user: User, onLikesChange?: (pokemonId: string, newLikes: number) => void }> = ({ pokemon, userPageMode = false, isFavorite, user, onLikesChange}) => {
 	const [isFilled, setIsFilled] = useState(isFavorite);
-	const id = user.user_id;
+	let id = null;
+	if (user)
+	{
+		id = String(user.user_id);
+	}
 
 	useEffect(() => {
     if (userPageMode) {
