@@ -11,7 +11,7 @@ import router from 'next/router';
 
 const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: boolean, user: User, onLikesChange?: (pokemonId: string, newLikes: number) => void }> = ({ pokemon, userPageMode = false, isFavorite, user, onLikesChange}) => {
 	const [isFilled, setIsFilled] = useState(isFavorite);
-	const { id } = router.query;
+	const id = user.user_id;
 
 	useEffect(() => {
     if (userPageMode) {
@@ -95,11 +95,20 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
 	let isUserOwner = false;
 	if (loggedUser) {
 		const parsedUser = JSON.parse(loggedUser);
+		console.log(loggedUser)
+		console.log(id)
 
 		if (id && !Array.isArray(id)) {
 			isUserOwner = parseInt(id) === parsedUser.user_id;
+
+			console.log(parseInt(id))
+			console.log(parsedUser.user_id.user_id)
+
+			console.log(isUserOwner)
 		}
+		// console.log(isUserOwner)
 	}
+
   return (
     <Link href={`/pokemon/${pokemon.id}`} passHref>
 			<div key={pokemon.name} className={`border rounded-lg shadow-lg p-4 bg-white relative ${userPageMode ? 'bg-white' : 'bg-white'} `}>
@@ -107,7 +116,7 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
 				{!isUserOwner ?
 					<button
 						onClick={(e) => {
-							e.preventDefault();  // Prevent the default action
+							e.preventDefault();
 							alert("This is not your Pokémon!!!");
 						}}
 						className="absolute top-6 right-5 focus:outline-none w-5"

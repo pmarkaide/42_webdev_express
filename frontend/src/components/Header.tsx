@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import pokeBall from '../assests/logo.png';
 import defaultAvatar from '../assests/default_avatar.jpg'
@@ -15,21 +15,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({user, setUser}) => {
 	const [dropdownVisible, setDropdownVisible] = useState(false);
 
-	// useEffect(() => {
-	// 	const userFromLS = localStorage.getItem('user');
-	// 	const token = localStorage.getItem('token');
-	// 	console.log(token)
-
-	// 	const parsedUser = JSON.parse(userFromLS);
-
-	// 	if (parsedUser && parsedUser.username) {
-	// 		setUser(parsedUser);
-	// 	} else {
-	// 		setUser(null);
-	// 	}
-	// }, []);
-
-  const isDetailPage = router.pathname.includes('/pokemon/');
+  const toggleDropdown = () => {
+    setDropdownVisible((prev) => !prev);
+  };
 
 	const handleLogout = () =>
 	{
@@ -67,8 +55,8 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
 						{/* <button><Heart isFilled={false} /></button> */}
             {user ? (
 							<div className="relative flex items-center space-x-2">
-								<UserSearch />
-								<h3 className="text-left">{user.username}</h3>
+									<UserSearch />
+									<h3 className="text-left">{user.username}</h3>
                 <button
                   onClick={toggleDropdown}
                   className="inline-flex items-center justify-center rounded-full h-10 w-10"
