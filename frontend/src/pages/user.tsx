@@ -74,7 +74,6 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) =>
 		// const expRequiredForNextLevel = level * 100;
 		const expRequiredForNextLevel = tempFakeLevel * 100;
 		return (exp / expRequiredForNextLevel) * 100;
-
   };
 
   const handleEditProfileClick = () => {
