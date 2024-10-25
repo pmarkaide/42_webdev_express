@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { PokeDetail, TypeSlot } from '../../components/Main';
+import { PokeDetail, TypeSlot } from '../../types/type_Pokemon'
 
 const PokemonDetail: React.FC = () => {
   const router = useRouter();
-  const { id } = router.query;  // Extract the Pokémon ID from the URL
+  const { id } = router.query;
   const [pokemon, setPokemon] = useState<PokeDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -53,7 +53,12 @@ const PokemonDetail: React.FC = () => {
   }
 
   return (
-
+    <div className="max-w-4xl mx-auto p-8 mt-28">
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-blue-500 to-green-500 p-4">
+          <h1 className="text-white text-3xl font-bold text-center">{pokemon.name}</h1>
+        </div>
     <div className="max-w-4xl mx-auto p-8 mt-28">
     <button 
       onClick={handleGoBack}
@@ -73,7 +78,7 @@ const PokemonDetail: React.FC = () => {
           <div className="md:w-1/2 p-8">
             <img
               className="mx-auto w-full h-auto object-contain transition-transform duration-300 ease-in-out hover:scale-105"
-              src={pokemon.sprites.other.showdown.front_default}
+              src={pokemon.sprites.other.home.front_default}
               alt={pokemon.name}
             />
           </div>

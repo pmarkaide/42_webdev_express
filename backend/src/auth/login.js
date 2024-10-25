@@ -1,27 +1,29 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { findUserByUsername } = require('./userModel'); // Ensure this imports your user model
+const { findUserByUsername } = require('./userModel');
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
+	const { username, password, auth_method } = req.body;
 
-  // Find the user by username
-  const user = await findUserByUsername(username);
+	const user = await findUserByUsername(username);
   if (!user) {
     return res.status(401).json({ message: 'Invalid username or password' });
-  }
+	}
 
-  // Check if the password matches
-  const isMatch = await bcrypt.compare(password, user.password_hash);
-  if (!isMatch) {
-    return res.status(401).json({ message: 'Invalid username or password' });
-  }
+	if (auth_method === 'local')
+	{
+		const isMatch = await bcrypt.compare(password, user.password_hash);
+		if (!isMatch)
+		{
+			return res.status(401).json({ message: 'Invalid username or password' });
+		}
+	}
 
-  // Successful login - generate JWT token
-  const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+	const { password_hash, ...userWithoutPassword } = user;
 
-  // Send the token back to the client
-  res.status(200).json({ message: 'Login successful', token });
+	const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '2h' });
+
+	res.status(200).json({ message: 'Login successful', token, user: userWithoutPassword });
 };
 
 module.exports = { login };

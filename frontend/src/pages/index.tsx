@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Main from '../components/Main';
-import Header from '../components/Header';
-import Footer from '@/components/Footer';
+import { User } from '@/types/type_User';
 
-import Link from 'next/link';
+interface HomeProps {
+  user: User | null;
+	setUser: (user: User | null) => void;
+}
 
-
-const Home: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-
+const Home: React.FC<HomeProps> = ({user, setUser}) => {
   return (
-    <>
-      <Header onSearch={setSearchQuery} />
-      <Main searchQuery={searchQuery} />
-      <Footer />
-    </>
+    <div>
+			<Main user={user} setUser={setUser}/>
+    </div>
   );
 };
 

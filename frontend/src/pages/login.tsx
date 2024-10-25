@@ -1,17 +1,17 @@
-// pages/login.tsx
-
 import React from 'react';
 import Login from '../components/Login';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { User } from '@/types/type_User';
 
-const LoginPage: React.FC = () => {
+interface LoginProps
+{
+	setUser: (user: User | null) => void;
+}
+
+const LoginPage: React.FC<LoginProps> = ({setUser}) => {
   return (
-	<div>
-		<Header />
-		<Login />
-		<Footer />
-    </div>
+		<div>
+			<Login setUser={setUser}/>
+		</div>
   );
 };
 
