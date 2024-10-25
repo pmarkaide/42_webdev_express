@@ -1,6 +1,6 @@
 <h2 id="routes">📍 API Endpoints</h2>
 ​
-<h3 id="get-auth-detail">GET /api/pokemons_with_likes</h3> -->
+<h3 id="get-auth-detail">GET /api/pokemons_with_likes</h3>
 
 **RESPONSE**
 ```json
