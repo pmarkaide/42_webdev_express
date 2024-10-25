@@ -4,6 +4,7 @@ import pokeBall from '../assests/logo.png';
 import defaultAvatar from '../assests/default_avatar.jpg'
 import { User } from '@/types/type_User';
 import Dropdown from './Dropdown';
+import UserSearch from './UserSearch';
 // import Heart from './Heart';
 
 interface HeaderProps {
@@ -66,7 +67,8 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
 						{/* <button><Heart isFilled={false} /></button> */}
             {user ? (
 							<div className="relative flex items-center space-x-2">
-									<h3 className="text-left">{user.username}</h3>
+								<UserSearch />
+								<h3 className="text-left">{user.username}</h3>
                 <button
                   onClick={toggleDropdown}
                   className="inline-flex items-center justify-center rounded-full h-10 w-10"

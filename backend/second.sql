@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS friends;
 -- Create the users table with auth_method
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     image VARCHAR(255), -- New column for user image
     password_hash VARCHAR(255), -- Allow NULL for Google users

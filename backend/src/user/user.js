@@ -199,12 +199,11 @@ const getAllUsers = async (req, res) => {
     }
 
     // Fetch all users but do not expose other users' data
-    const result = await pool.query(`
-      SELECT u.*,
+		const result = await pool.query(`
+      SELECT u.user_id, u.username, u.email,
         ARRAY(SELECT pokemon_id FROM favorites f WHERE f.user_id = u.user_id) AS favorite_pokemon_ids
       FROM users u
-      WHERE u.user_id = $1
-    `, [userId]); // Only fetch the user corresponding to the token
+    `);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'No users found' });

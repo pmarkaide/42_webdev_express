@@ -59,13 +59,15 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) => {
     } catch (error) {
       console.error('Failed to fetch user data:', error);
     }
-  };
+	};
 
   const calculateExperienceProgress = () => {
     if (!aSingleUser) return 0;
-    const { exp, level } = aSingleUser;
-    const expRequiredForNextLevel = level * 100;
-    return (exp / expRequiredForNextLevel) * 100;
+		const { exp, level } = aSingleUser;
+		const tempFakeLevel = 1;
+		// const expRequiredForNextLevel = level * 100;
+		const expRequiredForNextLevel = tempFakeLevel * 100;
+		return (exp / expRequiredForNextLevel) * 100;
   };
 
   const closeFriendList = () => {
@@ -117,7 +119,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, setUser }) => {
               />
             </div>
             <p className="text-gray-600 text-sm">
-              {aSingleUser?.exp} / {(aSingleUser?.level || 0) * 100} EXP
+							{aSingleUser?.exp} / {(1 || 0) * 100} EXP
             </p>
           </div>
 
