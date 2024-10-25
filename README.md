@@ -1,20 +1,5 @@
-<h1 align="center" style="font-weight: bold;">Project name 💻</h1>
-
-<p align="center">
- <a href="#tech">Technologies</a> •
- <a href="#started">Getting Started</a> •
-  <a href="#routes">API Endpoints</a> •
- <a href="#colab">Collaborators</a> •
- <a href="#contribute">Contribute</a>
-</p>
-
 <h2 id="routes">📍 API Endpoints</h2>
 ​
-<!-- | route               | description
-|----------------------|-----------------------------------------------------
-| <kbd>GET /authenticate</kbd>     | retrieves user info see [response details](#get-auth-detail)
-| <kbd>POST /authenticate</kbd>     | authenticate user into the api see [request details](#post-auth-detail)
-
 <h3 id="get-auth-detail">GET /api/pokemons_with_likes</h3> -->
 
 **RESPONSE**
