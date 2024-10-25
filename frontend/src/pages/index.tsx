@@ -16,4 +16,3 @@ const Home: React.FC<HomeProps> = ({user, setUser}) => {
 };
 
 export default Home;
-

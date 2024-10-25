@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import pokeBall from '../assests/logo.png';
 import defaultAvatar from '../assests/default_avatar.jpg'
@@ -28,9 +28,7 @@ const Header: React.FC<HeaderProps> = ({user, setUser}) => {
 	// 	}
 	// }, []);
 
-  const toggleDropdown = () => {
-    setDropdownVisible((prev) => !prev);
-  };
+  const isDetailPage = router.pathname.includes('/pokemon/');
 
 	const handleLogout = () =>
 	{

@@ -189,6 +189,10 @@ const Main: React.FC<MainProps> = ({user, setUser}) =>
 		);
 	}
 
+  if (router.pathname.includes('/pokemon/')) {
+	  return null; // Don't render anything if we're on a pokemon detail page
+  }
+
   return (
 		<div className='mt-32'>
 			<ToastContainer />
