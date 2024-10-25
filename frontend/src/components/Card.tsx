@@ -95,18 +95,9 @@ const Card: React.FC<{ pokemon: PokeDetail, userPageMode: boolean, isFavorite: b
 	let isUserOwner = false;
 	if (loggedUser) {
 		const parsedUser = JSON.parse(loggedUser);
-		console.log(loggedUser)
-		console.log(id)
-
 		if (id && !Array.isArray(id)) {
 			isUserOwner = parseInt(id) === parsedUser.user_id;
-
-			console.log(parseInt(id))
-			console.log(parsedUser.user_id.user_id)
-
-			console.log(isUserOwner)
 		}
-		// console.log(isUserOwner)
 	}
 
   return (

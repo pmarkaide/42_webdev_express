@@ -13,6 +13,7 @@ interface LoginProps
 const Login: React.FC<LoginProps> = ({setUser}) => {
   const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	const [auth_method, setAuth_method] = useState('local')
 	const [showPassword, setShowPassword] = useState(false);
 
 	const redirect = useRouter();
@@ -26,7 +27,7 @@ const Login: React.FC<LoginProps> = ({setUser}) => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ username, password }),
+				body: JSON.stringify({ username, password, auth_method }),
 			});
 			if (!response.ok) {
 				throw new Error('Login failed');
